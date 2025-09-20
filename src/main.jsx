@@ -1,22 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
-import Layout from './layouts/Layouts'
-import HomePage from './Pages/HomePage'
-import { About } from './Pages/about'
-import ContactForm from './Pages/Contact'
-import CoursesPage from './Pages/Courses'
-import Dashboard from './Pages/admin/Dashboard'
-import AdminLayouts from './layouts/AdminLayouts'
-import AboutForm from './Pages/admin/AboutFrom'
-import MainSettings from './Pages/admin/MainSettings'
-import HelpCare from './Pages/HalpCenter'
-import PrivacyPolicy from './Pages/PrivacyPolicy'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css'; // Import your global CSS
+import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom';
+import Layout from './layouts/Layouts.jsx.jsx';
+import HomePage from './Pages/HomePage.jsx';
+import { About } from './Pages/about.jsx';
+import ContactForm from './Pages/Contact.jsx';
+import CoursesPage from './Pages/Courses.jsx';
+import Dashboard from './Pages/admin/Dashboard.jsx';
+import AdminLayouts from './layouts/AdminLayouts.jsx';
+import AboutForm from './Pages/admin/AboutFrom.jsx';
+import MainSettings from './Pages/admin/MainSettings.jsx';
+import HelpCare from './Pages/HalpCenter.jsx';
+import PrivacyPolicy from './Pages/PrivacyPolicy.jsx';
 
+// Define your router with routes
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+      {/* Main Routes */}
       <Route path="/" element={<Layout />}>
         <Route index={true} element={<HomePage />} />
         <Route path="about" element={<About />} />
@@ -34,10 +36,11 @@ const router = createBrowserRouter(
       </Route>
     </>
   )
-)
+);
 
+// Rendering the React app and wrapping it in RouterProvider to enable routing
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router} />
   </StrictMode>
-)
+);
