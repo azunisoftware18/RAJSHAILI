@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css'; // Import your global CSS
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom';
-import Layout from './layouts/Layouts.jsx.jsx';
+import Layout from './layouts/Layouts.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import { About } from './Pages/about.jsx';
 import ContactForm from './Pages/Contact.jsx';
