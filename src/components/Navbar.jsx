@@ -20,11 +20,11 @@ function Navbar() {
                     {/* Logo */}
                     <div className="flex items-center space-x-2">
                         <span className="text-2xl font-bold text-gray-800 text-space">
-                            <img src="../../public/hero-img/rajshaili-removebg-preview.png" alt=""
+                            <img src="hero-img/rajshaili-removebg-preview.png" alt=""
                             className="w-13"
-                            >
+                           / >
 
-                            </img>
+                            
                         </span>
                     </div>
 

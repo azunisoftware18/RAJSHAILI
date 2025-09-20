@@ -64,7 +64,7 @@ function HeroSection() {
         {/* Right Image and Play Icon */}
         <div className="relative w-full md:w-1/2 flex justify-center">
           <img
-            src="../../public/hero-img/img-1-removebg-preview.png"
+            src="hero-img/img-1-removebg-preview.png"
             alt="Woman smiling"
             className="object-contain md:pt-10 w-[100rem] md:h-[50rem] md:mt-5"
           />

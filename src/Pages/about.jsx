@@ -32,7 +32,7 @@ function About() {
               </div>
             </div>
             <div className="w-full lg:w-1/2">
-              <img src="../../public/AboutImg/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png" alt="#" className=" md:h-[100vh] p-4  ml-8 md:ml-50" />
+              <img src="AboutImg/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png" alt="#" className=" md:h-[100vh] p-4  ml-8 md:ml-50" />
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@ function About() {
           </div>
           <div className="flex flex-wrap items-center">
             <div className="w-full lg:w-1/2">
-              <img src="../../public/AboutImg/Gemini_Generated_Image_ukkt42ukkt42ukkt.png" alt="" className="w-full md:w-160 md:ml-8 h-auto" />
+              <img src="AboutImg/Gemini_Generated_Image_ukkt42ukkt42ukkt.png" alt="" className="w-full md:w-160 md:ml-8 h-auto" />
             </div>
             <div className="w-full lg:w-1/2">
               <p className="text-xl mb-5 pt-5 md:m-5">
@@ -79,7 +79,7 @@ function About() {
           <h2 className="text-2xl font-semibold mb-8">Awards & Accolades</h2>
           <div className="flex flex-wrap items-center">
             <div className="w-full lg:w-1/2">
-              <img src="../../public/AboutImg/WhatsApp Image 2025-09-19 at 6.23.51 PM.jpeg" alt="" className="w-11/12 mx-auto" />
+              <img src="AboutImg/WhatsApp Image 2025-09-19 at 6.23.51 PM.jpeg" alt="" className="w-11/12 mx-auto" />
             </div>
             <div className="w-full lg:w-1/2 m-5 md:m-0">
               <ul className="list-none space-y-8 text-left pt-5">
