@@ -1,0 +1,405 @@
+section {
+    padding: 40px 0;
+}
+#about {
+    padding: 40px 0;
+    text-align: justify;
+    background-color: antiquewhite;
+}
+.about-main h1 {
+    font-size: 38px;
+    line-height: 1.4em;
+    letter-spacing: 1.5px;
+    text-transform: capitalize;
+    text-align: left;
+    font-weight: 600;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.about-main p {
+    font-size: 19px;
+    font-weight: 600;
+}
+.about-main button {
+    border: 3px solid #f37c36;
+    padding: 15px 90px;
+    background-color: #9f7c48;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 500;
+    color: white;
+    transition: all 0.5s;
+}
+.about-main button:hover {
+    background-color: #bd6633;
+}
+.about-detail h2 {
+    padding-bottom: 40px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+.about-img img {
+    width: 100%;
+    height: auto;
+    padding: 20px 16px;
+    margin-left: 0;
+}
+.about-image img {
+    width: 100%;
+    height: auto;
+}
+.about-text button {
+    border: 3px solid #f37c36;
+    padding: 10px 80px;
+    background-color: #9f7c48;
+    border-radius: 72px;
+    font-size: 24px;
+    font-weight: 500;
+    color: white;
+    transition: all 0.5s;
+    margin-left: 20px;
+}
+.about-text button:hover {
+    background-color: #bd6633;
+}
+.about-text p {
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 20px;
+}
+/* /////////////////////// journey section /////////////////// */
+#journey {
+    background-color: antiquewhite;
+}
+.journey-main img {
+    width: 100%;
+    height: auto; 
+}
+.journey-detail {
+    padding: 40px 0;
+}
+.journey-detail h5 {
+    font-size: 17px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+.journey-detail h1 {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.5em;
+}
+.journey-detail p {
+    font-size: 20px;
+    font-weight: 400;
+}
+.journey-detail button {
+    border: 3px solid #f37c36;
+    padding: 10px 80px;
+    background-color: #9f7c48;
+    border-radius: 72px;
+    font-size: 24px;
+    font-weight: 500;
+    color: white;
+    transition: all 0.5s;
+}
+.journey-detail button:hover {
+    background-color: #bd6633;
+}
+
+/* Award Section */
+.award-main {
+    text-align: center;
+    padding: 40px 0;
+    font-size: 26px;
+    font-weight: 600;
+}
+.award-detail img {
+    width: 90%;
+    margin-left: 20px;
+}
+.award-item ul li {
+    list-style: none;
+    margin: 10px 10px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-align: left;
+}
+.lucide.lucide-check {
+    margin-right: 10px;
+}
+
+/* Featured Section */
+.featured-img img {
+    width: 80%;
+}
+
+/* Service Section */
+#service {
+    background-color: antiquewhite;
+}
+.service-title h2 {
+    text-align: center;
+    font-size: 33px;
+    font-weight: 500;
+    position: relative;
+}
+.service-title h2::before {
+    content: "";
+    position: absolute;
+    border-bottom: 1px solid #b1a3a3;
+    width: 10%;
+    height: 2px;
+    bottom: -30%;
+    left: 45%;
+}
+.service-description {
+    width: 73%;
+    margin: 0 auto;
+    padding: 30px 0px;
+}
+.service-description p {
+    font-size: 20px;
+    align-items: center;
+    font-weight: 400;
+}
+.service-description ul li {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 15px;
+    font-weight: 400;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+}
+
+/* Service Images */
+.service-image1, .service-image2, .service-image3 {
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 89%;
+    height: 430px;
+    margin: 10px 0;
+}
+.service-image1 {
+    background-image: url(https://www.vaishaligupta.com/wp-content/uploads/2023/08/Residential-consultant-in-Noidia.jpg);
+}
+.service-image2 {
+    background-image: url(https://www.vaishaligupta.com/wp-content/uploads/2023/08/Industrial-Consultant.jpg);
+}
+.service-image3 {
+    background-image: url(https://www.vaishaligupta.com/wp-content/uploads/2023/08/Vastu-astrologer-in-Noida.jpg);
+}
+
+.service-image1 img, .service-image2 img, .service-image3 img {
+    position: absolute;
+    width: 70%;
+    top: 45px;
+    left: 50px;
+    padding: 40px;
+}
+
+.service-text {
+    padding: 40px 0;
+}
+.service-text h2 {
+    font-size: 27px;
+    font-weight: 400;
+    font-family: system-ui;
+}
+.service-text p {
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+.service-text ul li {
+    list-style: none;
+    margin: 7px -26px;
+    font-size: 18px;
+    display: flex;
+    font-weight: 400;
+    color: dimgray;
+    align-items: center;
+}
+.service-text button {
+    border: 3px solid #9f7c48;
+    padding: 5px 40px;
+    background-color: #9f7c48;
+    border-radius: 72px;
+    font-size: 24px;
+    font-weight: 500;
+    color: white;
+    transition: all 0.5s;
+}
+.service-text button:hover {
+    background-color: #b6996d;
+}
+
+/* Blog Section */
+.blog-contect {
+    padding: 20px 0;
+    margin: 5px 10px;
+}
+.blog-title h2 {
+    text-align: center;
+    font-size: 40px;
+    font-weight: 500;
+}
+.blog-image {
+    text-align: center;
+}
+.blog-image img {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+}
+.blog-detail h2 {
+    background-color: blanchedalmond;
+    font-size: 25px;
+    text-align: center;
+    font-weight: 400;
+    padding: 10px 0;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+}
+.blog-detail p {
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-family: system-ui;
+    margin-top: 20px;
+}
+.blog-btn {
+    text-align: center;
+    padding: 20px 0;
+}
+.blog-btn button {
+    border: 3px solid #9f7c48;
+    padding: 5px 80px;
+    background-color: #9f7c48;
+    border-radius: 72px;
+    font-size: 24px;
+    font-weight: 500;
+    color: white;
+    transition: all 0.5s;
+}
+.blog-btn button:hover {
+    background-color: #b6996d;
+}
+
+/* Guide Section */
+#guide {
+    background-color: bisque;
+}
+.guide-title {
+    width: 16%;
+    text-align: center;
+    margin: 0 auto;
+}
+.guide-title h2 {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+}
+.guide-detail {
+    width: 58%;
+    margin: 0 auto;
+}
+.guide-detail h1 {
+    font-size: 39px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 30px;
+    font-family: ui-monospace;
+}
+.guide-detail p {
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+@media screen and (max-width: 991px) {
+    .journey-main img {
+        height: auto;
+        max-height: 500px;
+    }
+    .about-main h1 {
+        font-size: 30px;
+    }
+    .service-title h2 {
+        font-size: 28px;
+    }
+    .service-description {
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .navbar {
+        display: none;
+    }
+    .icon-text {
+        display: block;
+    }
+       .navbar ul {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        padding: 10px 30px;
+        margin: 10px 10px;
+    }
+    .navbar ul li {
+        list-style: none;
+        padding: 10px 20px;
+        text-align: center;
+    }
+    .about-main h1 {
+        font-size: 24px;
+        text-align: left;
+        font-weight: 600;
+    }
+    .about-detail h2 {
+        padding-bottom: 40px;
+        text-align: left;
+        font-size: 31px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+    #featured .container {
+        text-align: center;
+    }
+    .fetured-main {
+        text-align: center;
+    }
+    .about-main p, .journey-detail p {
+        font-size: 14px;
+    }
+    .about-img img, .award-detail img, .featured-img img {
+        width: 90%;
+    }
+    .about-main button, .about-text button, .journey-detail button, .service-text button, .blog-btn button {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    .service-description {
+        width: 100%;
+        padding: 0 10px;
+    }
+    .guide-title {
+        width: 46%;
+        text-align: center;
+        margin: 0 auto;
+    }
+    .guide-detail {
+        width: 90%;
+    }
+}

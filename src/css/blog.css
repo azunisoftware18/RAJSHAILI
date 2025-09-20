@@ -1,0 +1,52 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+#Blogs {
+    background-image: url(https://www.vaishaligupta.com/wp-content/uploads/2023/11/Vedic-Vastu-Course-by-Dr.-Vaishali-Gupta.jpg);
+    background-repeat: no-repeat;
+    background-position: center 20%;
+    background-size: cover; 
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+.blogs-title {
+    position: absolute;
+    top: 92%;
+}
+.blogs-title h2 {
+    text-align: center;
+    font-size: 40px;
+    font-weight: 500;
+    color: white;
+}
+.blogs-image {
+    text-align: center;
+}
+.blogs-image img {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+}
+.blogs-text h2 {
+    font-size: 25px;
+    text-align: center;
+    font-weight: 400;
+    padding: 10px 0;
+    color: black;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+}
+
+
+@media (max-width: 768px) {
+    .section {
+        background-position: center 10%; 
+    }
+    .blogs-title {
+        position: absolute;
+        top: 80%;
+    }
+}
