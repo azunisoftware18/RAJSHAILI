@@ -8,23 +8,19 @@ function Navbar() {
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
+    
     return (
-        <header className=" shadow-sm fixed items-center text-center w-screen z-50 bg-[#FFD700]" 
-        // style={{
-        //         background:
-        //             "#ffd700"
-        //     }}
-        >
+        <header className="shadow-sm fixed items-center text-center w-screen z-50 bg-[#FFD700]">
             <div className="px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center py-4">
                     {/* Logo */}
                     <div className="flex items-center space-x-2">
                         <span className="text-2xl font-bold text-gray-800 text-space">
-                            <img src="hero-img/rajshaili-removebg-preview.png" alt=""
-                            className="w-13"
-                           / >
-
-                            
+                            <img
+                                src="hero-img/rajshaili-removebg-preview.png"
+                                alt="Rajshaili Logo"
+                                className="w-16"  // Adjust the size of the logo
+                            />
                         </span>
                     </div>
 
@@ -61,25 +57,25 @@ function Navbar() {
                 <nav className="md:hidden px-2 pb-4 space-y-2">
                     <Link
                         to="/"
-                        className="block text-gray-700 hover:text-white-"
+                        className="block text-gray-700 hover:text-white"
                     >
                         Home
                     </Link>
                     <Link
                         to="/courses"
-                        className="block text-gray-700 hover:text-white-"
+                        className="block text-gray-700 hover:text-white"
                     >
                         Courses
                     </Link>
                     <Link
                         to="/about"
-                        className="block text-gray-700 hover:text-white-"
+                        className="block text-gray-700 hover:text-white"
                     >
                         About
                     </Link>
                     <Link
                         to="/contact"
-                        className="block text-gray-700 hover:text-white-"
+                        className="block text-gray-700 hover:text-white"
                     >
                         Contact
                     </Link>
