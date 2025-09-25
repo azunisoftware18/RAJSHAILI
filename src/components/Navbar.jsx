@@ -1,88 +1,86 @@
-import { useState } from "react";
-import { HiMenu, HiX } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
+import { Link, HashRouter } from "react-router-dom";
 
-function Navbar() {
+export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    // Scroll effect ke liye
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 10) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        // Cleanup function
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
     
+    const closeMenu = () => setIsOpen(false);
+
+    // Link ke liye common classes
+    const linkClasses = "relative text-white font-medium transition-colors hover:text-yellow-400 after:content-[''] after:absolute after:left-0 after:bottom-[-5px] after:h-[2px] after:w-0 after:bg-yellow-400 after:transition-all after:duration-300 hover:after:w-full";
+
+    // NOTE: HashRouter yahan sirf preview environment mein Link component ko chalane ke liye hai.
+    // Aapki main application mein, yeh component ek global router ke andar hona chahiye.
     return (
-        <header className="shadow-sm fixed items-center text-center w-screen z-50 bg-[#FFD700]">
-            <div className="px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center py-4">
-                    {/* Logo */}
-                    <div className="flex items-center space-x-2">
-                        <span className="text-2xl font-bold text-gray-800 text-space">
+            <header className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-[#192A41] shadow-lg' : 'bg-transparent'}`}>
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center py-4">
+                        {/* Logo */}
+                        <Link to="/" onClick={closeMenu}>
                             <img
-                                src="hero-img/rajshaili-removebg-preview.png"
+                                src="/hero-img/logo.png"
                                 alt="Rajshaili Logo"
-                                className="w-16"  // Adjust the size of the logo
+                                className="w-auto h-12" 
                             />
-                        </span>
-                    </div>
+                        </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden md:flex space-x-8 md:pr-8">
-                        <Link to="/" className="text-black hover:text-red-700">
-                            Home
-                        </Link>
-                        <Link to="/courses" className="text-black hover:text-red-700">
-                            Courses
-                        </Link>
-                        <Link to="/about" className="text-black hover:text-red-700">
-                            About
-                        </Link>
-                        <Link to="/contact" className="text-black hover:text-red-700">
-                            Contact
-                        </Link>
-                    </nav>
+                        {/* Desktop Navigation */}
+                        <nav className="hidden md:flex items-center space-x-8">
+                            <Link to="/" className={linkClasses}>Home</Link>
+                            <Link to="/courses" className={linkClasses}>Courses</Link>
+                            <Link to="/about" className={linkClasses}>About</Link>
+                            <Link to="/contact" className={linkClasses}>Contact</Link>
+                            <Link to="/login" className="bg-yellow-400 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-300  shadow-yellow-300/50 transition-all duration-300 shadow-md hover:shadow-lg">
+                                Login
+                            </Link>
+                        </nav>
 
-                    {/* Mobile Menu Button */}
-                    <div className="md:hidden flex items-center">
-                        <button
-                            onClick={toggleMenu}
-                            className="text-gray-700 focus:outline-none pr-2 cursor-pointer"
-                        >
-                            {isOpen ? <HiX size={28} /> : <HiMenu size={28} />}
-                        </button>
+                        {/* Mobile Menu Button */}
+                        <div className="md:hidden">
+                            <button onClick={toggleMenu} className="text-white focus:outline-none">
+                                {isOpen ? <X size={28} /> : <Menu size={28} />}
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Mobile Navigation Menu */}
-            {isOpen && (
-                <nav className="md:hidden px-2 pb-4 space-y-2">
-                    <Link
-                        to="/"
-                        className="block text-gray-700 hover:text-white"
-                    >
-                        Home
-                    </Link>
-                    <Link
-                        to="/courses"
-                        className="block text-gray-700 hover:text-white"
-                    >
-                        Courses
-                    </Link>
-                    <Link
-                        to="/about"
-                        className="block text-gray-700 hover:text-white"
-                    >
-                        About
-                    </Link>
-                    <Link
-                        to="/contact"
-                        className="block text-gray-700 hover:text-white"
-                    >
-                        Contact
-                    </Link>
-                </nav>
-            )}
-        </header>
+                {/* Mobile Navigation Menu */}
+                <div className={`
+                    md:hidden absolute top-full left-0 w-full bg-[#192A41] transition-all duration-500 ease-in-out overflow-hidden
+                    ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
+                `}>
+                    <nav className="flex flex-col items-center space-y-6 py-8">
+                        <Link to="/" className="text-white text-lg hover:text-yellow-400" onClick={closeMenu}>Home</Link>
+                        <Link to="/courses" className="text-white text-lg hover:text-yellow-400" onClick={closeMenu}>Courses</Link>
+                        <Link to="/about" className="text-white text-lg hover:text-yellow-400" onClick={closeMenu}>About</Link>
+                        <Link to="/contact" className="text-white text-lg hover:text-yellow-400" onClick={closeMenu}>Contact</Link>
+                        <Link to="/login" className="bg-yellow-400 text-gray-900 font-bold py-2 px-8 rounded-full hover:bg-yellow-300 transition-all duration-300 mt-4" onClick={closeMenu}>
+                            Login
+                        </Link>
+                    </nav>
+                </div>
+            </header>
     );
 }
 
-export default Navbar;

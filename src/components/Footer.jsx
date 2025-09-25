@@ -8,14 +8,15 @@ function Footer() {
                 <div className="grid md:grid-cols-4 gap-8">
                     <div>
                         <div className="flex items-center space-x-2 mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-yellow-500 rounded-full flex items-center justify-center">
-                                <span className="text-white font-bold text-lg">
-                                    R
-                                </span>
+                            <div className="w-35 h-10 rounded-full flex items-center justify-center">
+                                <Link to="/">
+                                    <img
+                                    src="../../public/hero-img/logo.png"
+                                    alt="Rajshaili Logo"
+                                    className="w-full h-10"  // Adjust the size of the logo
+                                    />
+                            </Link>
                             </div>
-                            <span className="text-xl font-bold">
-                                R a j s h a i l i
-                            </span>
                         </div>
                         <p className="text-gray-800">
                             Blending the wisdom of ancient traditions with modern science to create a holistic path for knowledge, well-being, and harmony.

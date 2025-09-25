@@ -1,112 +1,112 @@
-// HeroSection.jsx
 import React, { useState } from "react";
-import { FaPlayCircle } from "react-icons/fa";
 
-function HeroSection() {
+// Custom CSS animations ke liye style tag
+const CustomStyles = () => (
+  <style>{`
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; opacity: 0; }
+      to { opacity: 1; opacity: 1; }
+    }
+    .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+    .animate-fadeIn { animation: fadeIn 1s ease-out forwards; }
+    
+    .opacity-0 { opacity: 0; }
+    .delay-200 { animation-delay: 200ms; }
+    .delay-400 { animation-delay: 400ms; }
+    .delay-600 { animation-delay: 600ms; }
+  `}</style>
+);
+
+// PlayCircle icon ke liye inline SVG
+const FaPlayCircle = (props) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 24 24" 
+        fill="currentColor" 
+        {...props}
+    >
+        <path 
+            fillRule="evenodd" 
+            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z" 
+            clipRule="evenodd" 
+        />
+    </svg>
+);
+
+
+export default function HeroSection() {
   const [openVideo, setOpenVideo] = useState(false);
 
   return (
-    <section className="w-full overflow-hidden relative bg-red-800 p-5">
-      <div className="flex flex-col md:flex-row items-center justify-between">
+    // Background updated to the new dark blue theme
+    <section className="w-full overflow-hidden relative bg-[#192A41] p-5 md:h-200 h-260">
+      <CustomStyles />
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between min-h-screen pt-20 md:pt-0">
         {/* Left Text and Buttons */}
-        <div className="flex-1 text-white text-center md:text-left px-4 md:px-8 py-16 md:py-20">
-          <p className="mb-3 text-sm md:text-base font-semibold tracking-wide">
-            Ancient Wisdom • Modern Well-being
+        <div className="flex-1 text-white text-center md:text-left px-4 md:px-8 z-10">
+          <p className="mb-4 text-sm md:text-base font-semibold tracking-widest text-gray-400 opacity-0 animate-fadeInUp">
+            ANCIENT WISDOM • MODERN CLARITY
           </p>
 
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white opacity-0 animate-fadeInUp delay-200">
             Rajshaili: The Institute of{" "}
-            <span className="text-[#F8E72D]">Divine Knowledge</span>
+            <span className="text-yellow-400">Divine Knowledge</span>
           </h1>
 
-          <p className="text-sm md:text-base mb-8 font-medium max-w-xl mx-auto md:mx-0">
-            Bridging{" "}
-            <span className="font-semibold">
-              Vedic Astrology, Vastu & Mental Health
-            </span>{" "}
-            with modern science to empower you with clarity, peace & purpose.
+          <p className="text-base md:text-lg mb-8 font-light max-w-xl mx-auto md:mx-0 text-gray-300 opacity-0 animate-fadeInUp delay-400">
+            Bridging Vedic Astrology, Vastu & Mental Health with modern science to
+            empower you with clarity, peace & purpose.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-6">
-            <button className="bg-black text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:scale-105 transition-transform duration-200 cursor-pointer">
-              Join Us Today
+          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-6 opacity-0 animate-fadeInUp delay-600">
+            <button className="bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300  shadow-yellow-300/50 hover:scale-105 transition-all duration-300 cursor-pointer">
+              Explore Our Courses
             </button>
-
-            <div className="flex items-center space-x-4 text-white">
-              <span className="text-xl font-bold">4.9</span>
-              <div className="flex text-yellow-400 space-x-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <svg
-                    key={i}
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.381-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <p className="text-sm font-medium whitespace-nowrap">
-                6000+ Reviews <span className="font-bold mx-1">|</span> Excellent
-              </p>
-              <div>
-                <img
-                  src="https://cdn.prod.website-files.com/6502992df70717be21112efc/6502992df70717be21112f09_trustpilot.svg"
-                  alt="Trustpilot logo"
-                  className="h-6 cursor-pointer"
-                />
-              </div>
-            </div>
+            <button 
+              onClick={() => setOpenVideo(true)}
+              className="flex items-center text-white font-semibold hover:text-yellow-400 transition-colors  animate-bounce"
+            >
+                <FaPlayCircle className="mr-2 h-6 w-6" /> Watch Intro
+            </button>
           </div>
         </div>
 
-        {/* Right Image and Play Icon */}
-        <div className="relative w-full md:w-1/2 flex justify-center">
+        {/* Right Image */}
+        <div className="relative w-full md:w-1/2 flex justify-center items-center opacity-0 animate-fadeIn delay-400 mt-10 md:mt-0">
           <img
-            src="hero-img/img-1-removebg-preview.png"
-            alt="Woman smiling"
-            className="object-contain md:pt-10 w-[100rem] md:h-[50rem] md:mt-5"
+            src="/public/hero-img/hd-wallpaper-7742822_1920-removebg-preview.png" // Path ko yahan update karein
+            alt="Shalini Salecha - Rajshaili Institute"
+            className="object-contain w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg animate-spin-slow duration-600 hover:scale-110 hover:fill-yellow-600 hover:drop-shadow-lg hover:drop-shadow-yellow-600/50"
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-white text-sm md:text-lg font-semibold mb-4 select-none">
-              Watch Video
-            </span>
-            <FaPlayCircle
-              className="text-black bg-yellow-400 rounded-full cursor-pointer hover:scale-110 transition-transform duration-300"
-              size={64}
-              aria-label="Play video"
-              onClick={() => setOpenVideo(true)}
-            />
-          </div>
         </div>
       </div>
 
-      {/* ✅ Video Modal (native video tag like testimonials) */}
+      {/* Video Modal */}
       {openVideo && (
-  <div
-    className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-    onClick={() => setOpenVideo(false)} // click outside = close
-  >
-    <div
-      className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl"
-      onClick={(e) => e.stopPropagation()} // prevent closing on video click
-    >
-      <iframe
-        className="w-full h-[220px] sm:h-[320px] md:h-[480px] lg:h-[560px] rounded-xl"
-        src="https://www.youtube.com/embed/AIJGPal3NM8?autoplay=1&rel=0"
-        title="YouTube video"
-        frameBorder="0"
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-      ></iframe>
-    </div>
-  </div>
-)}
-
-
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-fadeIn"
+          onClick={() => setOpenVideo(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              className="w-full aspect-video rounded-xl"
+              src="https://www.youtube.com/embed/AIJGPal3NM8?autoplay=1&rel=0"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
 
-export default HeroSection;

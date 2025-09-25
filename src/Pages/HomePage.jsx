@@ -99,7 +99,7 @@ const Card = ({
 
 const learningPathData = [
     {
-        step: 1,
+        step: 1, 
         title: "The Integrated Framework",
         description: "Begin your journey by understanding our core philosophy: the seamless integration of ancient wisdom from Vastu and Astrology with modern psychology and mental health practices.",
     },
@@ -366,79 +366,79 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                     </div>
                 </marquee>
             </section>
-            <section className="px-8">
-  <div className="text-center mb-12">
-    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-      What You'll{" "}
-      <span className="bg-gradient-to-r from-yellow-400 via-red-600 to-red-700 bg-clip-text text-transparent">
-        Learn In Vedic Vastu Hub?
-      </span>
-    </h1>
-  </div>
-
-  {/* Cards Container */}
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
-    {/* Card 1 - Family's Vastu Guru */}
-    <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
-      <div className="flex justify-between items-start mb-6">
-        <h2 className="text-2xl font-bold leading-tight">
-          Ancient Knowledge <br /> for Modern Life
-        </h2>
-        <div className="bg-gradient-to-br from-orange-400 to-red-500  bg-opacity-20 p-3 rounded-xl backdrop-blur-sm">
-          <BookOpen className="w-8 h-8 text-white" />
-        </div>
-      </div>
-
-      <p className="hover:text-white text-opacity-90 leading-relaxed">
-        Rajshaili blends ancient wisdom of{" "}
-        <span className="font-semibold">Astrology & Vastu</span> with modern
-        psychology. We provide a sanctuary where tradition meets science,
-        helping you understand cosmic influences and environmental harmony for
-        a balanced, successful life.
-      </p>
+    <section className="px-8">
+    <div className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+        What You'll{" "}
+        <span className="bg-gradient-to-r from-yellow-400 via-yellow-600 to-[#e0dd00] bg-clip-text text-transparent">
+            Learn In Vedic Vastu Hub?
+        </span>
+        </h1>
     </div>
 
-    {/* Card 2 - Vedic Vastu Shastra Practitioner */}
-    <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
-      <div className="flex justify-between items-start mb-6">
-        <h2 className="text-2xl font-bold leading-tight">
-          Vision of <br /> Rajshaili Institute
-        </h2>
-        <div className="bg-gradient-to-t from-orange-400 to-red-500 p-3 rounded-xl">
-          <User className="w-8 h-8 text-white" />
+    {/* Cards Container */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
+        {/* Card 1 - Family's Vastu Guru */}
+        <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-blue-900 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
+        <div className="flex justify-between items-start mb-6">
+            <h2 className="text-2xl font-bold leading-tight">
+            Ancient Knowledge <br /> for Modern Life
+            </h2>
+            <div className="bg-gradient-to-br from-orange-400 to-red-500  bg-opacity-20 p-3 rounded-xl backdrop-blur-sm">
+            <BookOpen className="w-8 h-8 text-white" />
+            </div>
         </div>
-      </div>
 
-      <p className="leading-relaxed">
-        Our vision is to create a{" "}
-        <span className="font-semibold">global platform</span> where spiritual
-        sciences are preserved, researched, and integrated with wellness &
-        psychology. We aim to foster cross-cultural dialogue and a conscious,
-        harmonious world.
-      </p>
-    </div>
-
-    {/* Card 3 - Launch Successful Practice */}
-    <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
-      <div className="flex justify-between items-start mb-6">
-        <h2 className="text-2xl font-bold leading-tight">
-          Mission & <br /> Core Objectives
-        </h2>
-        <div className="bg-gradient-to-br from-orange-400 to-red-600 p-3 rounded-xl">
-          <Users className="w-8 h-8 text-white" />
+        <p className="hover:text-white text-opacity-90 leading-relaxed">
+            Rajshaili blends ancient wisdom of{" "}
+            <span className="font-semibold">Astrology & Vastu</span> with modern
+            psychology. We provide a sanctuary where tradition meets science,
+            helping you understand cosmic influences and environmental harmony for
+            a balanced, successful life.
+        </p>
         </div>
-      </div>
 
-      <p className="leading-relaxed">
-        We bridge{" "}
-        <span className="font-semibold">ancient knowledge & modern science</span>{" "}
-        through education, research & outreach. Our mission is to empower
-        students to grow spiritually, mentally & emotionally, serving society
-        with wisdom, harmony & compassion.
-      </p>
+        {/* Card 2 - Vedic Vastu Shastra Practitioner */}
+        <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
+        <div className="flex justify-between items-start mb-6">
+            <h2 className="text-2xl font-bold leading-tight">
+            Vision of <br /> Rajshaili Institute
+            </h2>
+            <div className="bg-gradient-to-t from-orange-400 to-red-500 p-3 rounded-xl">
+            <User className="w-8 h-8 text-white" />
+            </div>
+        </div>
+
+        <p className="leading-relaxed">
+            Our vision is to create a{" "}
+            <span className="font-semibold">global platform</span> where spiritual
+            sciences are preserved, researched, and integrated with wellness &
+            psychology. We aim to foster cross-cultural dialogue and a conscious,
+            harmonious world.
+        </p>
+        </div>
+
+        {/* Card 3 - Launch Successful Practice */}
+        <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
+        <div className="flex justify-between items-start mb-6">
+            <h2 className="text-2xl font-bold leading-tight">
+            Mission & <br /> Core Objectives
+            </h2>
+            <div className="bg-gradient-to-br from-orange-400 to-red-600 p-3 rounded-xl">
+            <Users className="w-8 h-8 text-white" />
+            </div>
+        </div>
+
+        <p className="leading-relaxed">
+            We bridge{" "}
+            <span className="font-semibold">ancient knowledge & modern science</span>{" "}
+            through education, research & outreach. Our mission is to empower
+            students to grow spiritually, mentally & emotionally, serving society
+            with wisdom, harmony & compassion.
+        </p>
+        </div>
     </div>
-  </div>
-</section>
+    </section>
 
 
             {/* Exclusive Benefits */}

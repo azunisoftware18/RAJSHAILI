@@ -10,7 +10,7 @@ export default function AdminLayouts() {
       <div className=" md:flex md:w-full">
         <SidebarNav />
 
-        <div className="md:ml-64 md:w-full">
+        <div className="md:w-full">
           <AdminNavbar />
           <div className="md:w-full">
             <Outlet />
