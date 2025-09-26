@@ -13,7 +13,6 @@ import AboutForm from './Pages/admin/AboutFrom.jsx';
 import MainSettings from './Pages/admin/MainSettings.jsx';
 import HelpCare from './Pages/HalpCenter.jsx';
 import PrivacyPolicy from './Pages/PrivacyPolicy.jsx';
-import RegistrationForm from './components/registration.jsx';
 import LoginForm from './components/Login.jsx';
 import AddCourseForm from './Pages/admin/AddCourseForm.jsx';
 import UserTable from './Pages/admin/UserData.jsx';
@@ -32,7 +31,6 @@ const router = createBrowserRouter(
         <Route path="courses" element={<CoursesPage />} />
         <Route path="helpcare" element={<HelpCare />} />
         <Route path="privacypolicy" element={<PrivacyPolicy />} />
-        <Route path="registration" element={<RegistrationForm/>}/>
         <Route path="login" element={<LoginForm/>}/>
       </Route>
 
