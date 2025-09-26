@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { User, Mail, MessageCircle, Phone } from 'lucide-react';
+import { User, Mail, MessageSquare, Phone } from 'lucide-react';
 
-const ContactForm = () => {
+export default function ContactForm() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -17,18 +17,16 @@ const ContactForm = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    // Validate required fields
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (!formData.fullName || !formData.email || !formData.phoneNumber) {
-      alert('Please fill in all required fields');
+      alert('Please fill in all required fields.');
       return;
     }
     
     console.log('Form submitted:', formData);
-    // Handle form submission logic here
     alert('Message sent successfully!');
     
-    // Reset form
     setFormData({
       fullName: '',
       email: '',
@@ -38,131 +36,82 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-stone-200">
-      {/* Header Section with Background Image */}
-<div className="relative h-96 flex flex-col justify-center items-center text-white">
-  {/* Background Image */}
-  <img 
-    src="https://media.istockphoto.com/id/1815784643/photo/zodiac-signs-inside-of-horoscope-circle-astrology-in-the-sky-with-many-stars-and-moons.jpg?s=612x612&w=0&k=20&c=OZzWDnmz3Zzrky_AGqJignpg0hoqumC753A9ySD7Jhs=" 
-    alt="Background Pattern"
-    className="absolute inset-0 w-full h-full object-cover"
-  />
-  {/* Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-b  to-[#650000]/80"></div>
-
-  {/* Decorative geometric patterns overlay */}
-  <div className="absolute inset-0 opacity-10">
-    <div className="absolute top-10 left-10 w-32 h-32 border-2 border-yellow-300 rotate-45"></div>
-    <div className="absolute top-20 right-20 w-24 h-24 border border-yellow-300 rotate-12"></div>
-    <div className="absolute bottom-20 left-20 w-20 h-20 border border-yellow-300 rotate-45"></div>
-  </div>
-
-  {/* Header Content */}
-  <div className="text-center z-10 px-4">
-    {/* Top right menu icon */}
-    <div className="absolute top-6 right-6">
-      <div className="flex flex-col space-y-1">
-        <div className="w-6 h-0.5 bg-white"></div>
-        <div className="w-6 h-0.5 bg-white"></div>
-        <div className="w-6 h-0.5 bg-white"></div>
+    <div className="min-h-screen bg-[#192A41] text-white">
+      {/* Header Section */}
+      <div className="relative h-80 flex flex-col justify-center items-center text-center px-4">
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center opacity-20"
+          style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/stardust.png')` }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#192A41] to-transparent"></div>
+        <div className="relative z-10">
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-2">
+            Get In Touch
+          </h1>
+          <p className="text-lg md:text-xl text-gray-300 max-w-2xl">
+            We are here to help and answer any question you might have. We look forward to hearing from you.
+          </p>
+        </div>
       </div>
-    </div>
 
-    <div className="mb-8">
-      <h1 className="text-4xl md:text-5xl font-light mb-2 tracking-wide">
-        Dr. Vaishali Gupta
-      </h1>
-      <div className="flex items-center justify-center space-x-4">
-        <div className="h-px bg-white w-12"></div>
-        <p className="text-lg md:text-xl font-light tracking-widest">
-          VASTU & ASTROLOGY
-        </p>
-        <div className="h-px bg-white w-12"></div>
-      </div>
-    </div>
-    
-    <div className="text-center">
-      <h2 className="text-3xl md:text-4xl font-light">
-        Contact Us Now
-      </h2>
-    </div>
-  </div>
-</div>
-
-
-      {/* Contact Form Section */}
-      <div className="py-16 px-4" style={{ backgroundColor: '#F5F1EB' }}>
+      {/* Main Content: Form Section */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-24">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-light text-center text-slate-600 mb-12 font-serif">
-            Send Us Message Now
-          </h2>
-
-          <div className="space-y-4">
-            {/* Full Name Input */}
-            <div className="relative">
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleInputChange}
-                placeholder="Enter your full name*"
-                className="w-full px-4 py-5 pr-12 text-gray-600 placeholder-gray-400 bg-white rounded-lg border border-gray-200 focus:border-orange-400 focus:outline-none shadow-sm text-base"
-              />
-              <User className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-300" />
-            </div>
-
-            {/* Email Input */}
-            <div className="relative">
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Enter your email*"
-                className="w-full px-4 py-5 pr-12 text-gray-600 placeholder-gray-400 bg-white rounded-lg border border-gray-200 focus:border-orange-400 focus:outline-none shadow-sm text-base"
-              />
-              <Mail className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-300" />
-            </div>
-
-            {/* Phone Number Input */}
-            <div className="relative">
-            <input
-                type="tel"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                placeholder="Enter your phone no.*"
-                className="w-full px-4 py-5 text-gray-600 placeholder-gray-400 bg-white rounded-lg border border-gray-200 focus:border-orange-400 focus:outline-none shadow-sm text-base"
-            />
-            <Phone className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-300" />
-            </div>
-
-
-            {/* Subject Input */}
-            <div className="relative">
-              <input
-                type="text"
-                name="subject"
-                value={formData.subject}
-                onChange={handleInputChange}
-                placeholder="Subject"
-                className="w-full px-4 py-5 pr-12 text-gray-600 placeholder-gray-400 bg-white rounded-lg border border-gray-200 focus:border-orange-400 focus:outline-none shadow-sm text-base"
-              />
-              <MessageCircle className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-300" />
-            </div>
-
-            {/* Submit Button */}
-            <div className="pt-4">
+          {/* Contact Form */}
+          <div className="bg-[#1F3A5A]/50 backdrop-blur-md rounded-2xl p-8 border border-blue-800/50 shadow-lg">
+            <h2 className="text-3xl font-bold mb-6 text-yellow-400 text-center">Send Us a Message</h2>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="relative">
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  placeholder="Full Name*"
+                  className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              </div>
+              <div className="relative">
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Email Address*"
+                  className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              </div>
+              <div className="relative">
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  placeholder="Phone Number*"
+                  className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              </div>
+              <div className="relative">
+                 <textarea
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  placeholder="Your Message"
+                  rows="4"
+                  className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+                <MessageSquare className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
+              </div>
               <button
-                onClick={handleSubmit}
-                className="w-full text-white font-semibold py-5 px-6 rounded-lg transition-all duration-300 text-lg tracking-wide"
-                style={{ backgroundColor: '#CD8B76' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#B87A65'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#CD8B76'}
+                type="submit"
+                className="w-full bg-yellow-400 text-gray-900 font-bold py-3 px-6 rounded-full hover:bg-yellow-300 transition-all duration-300 shadow-md hover:shadow-lg text-lg"
               >
-                SEND MESSAGE
+                Send Message
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -170,4 +119,3 @@ const ContactForm = () => {
   );
 };
 
-export default ContactForm;

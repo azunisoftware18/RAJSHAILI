@@ -1,12 +1,6 @@
 @import "tailwindcss";
 
-* {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-*::-webkit-scrollbar {
-  display: none;
-}
+
 /* slow spin animation */
 @keyframes spin-slow {
   from { transform: rotate(0deg); }

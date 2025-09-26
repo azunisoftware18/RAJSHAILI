@@ -36,7 +36,7 @@ const Card = ({
       flex flex-col items-center justify-between
       ${
           buttonColor === "pink"
-              ? "bg-gradient-to-r from-yellow-400 via-red-600 to-red-700 text-white"
+              ? "bg-gradient-to-r from-[#334764] via-[#46628a] to-yellow-300 text-white" //gst
               : "bg-white text-gray-800"
       }
       w-full
@@ -370,8 +370,8 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
     <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
         What You'll{" "}
-        <span className="bg-gradient-to-r from-yellow-400 via-yellow-600 to-[#e0dd00] bg-clip-text text-transparent">
-            Learn In Vedic Vastu Hub?
+        <span className="bg-gradient-to-r from-yellow-300 via-yellow-300 to-[#46628a] bg-clip-text text-transparent">
+            Learn In Vedic Rajshaili Hub?
         </span>
         </h1>
     </div>
@@ -379,12 +379,12 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
     {/* Cards Container */}
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
         {/* Card 1 - Family's Vastu Guru */}
-        <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-blue-900 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
+        <div className="hover:bg-gradient-to-r from-[#2e4c75] via-[#345583] to-yellow-300 duration-600 hover:text-white hover:shadow-yellow-300/50  bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow">
         <div className="flex justify-between items-start mb-6">
             <h2 className="text-2xl font-bold leading-tight">
-            Ancient Knowledge <br /> for Modern Life
+            Ancient Knowledge <br /> for Modern Life    
             </h2>
-            <div className="bg-gradient-to-br from-orange-400 to-red-500  bg-opacity-20 p-3 rounded-xl backdrop-blur-sm">
+            <div className="bg-[#345583]  bg-opacity-20 p-3 rounded-xl backdrop-blur-sm">
             <BookOpen className="w-8 h-8 text-white" />
             </div>
         </div>
@@ -399,12 +399,12 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
         </div>
 
         {/* Card 2 - Vedic Vastu Shastra Practitioner */}
-        <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
+        <div className="hover:bg-gradient-to-r from-[#2e4c75] via-[#345583] to-yellow-300 hover:shadow-yellow-300/50 duration-300 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
         <div className="flex justify-between items-start mb-6">
             <h2 className="text-2xl font-bold leading-tight">
             Vision of <br /> Rajshaili Institute
             </h2>
-            <div className="bg-gradient-to-t from-orange-400 to-red-500 p-3 rounded-xl">
+            <div className="bg-[#345583] p-3 rounded-xl">
             <User className="w-8 h-8 text-white" />
             </div>
         </div>
@@ -419,12 +419,12 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
         </div>
 
         {/* Card 3 - Launch Successful Practice */}
-        <div className="hover:bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
+        <div className="hover:bg-gradient-to-r from-[#2e4c75] via-[#345583] to-yellow-300 hover:shadow-yellow-300/50 duration-300 hover:text-white bg-white rounded-2xl p-8 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow hover:duration-300">
         <div className="flex justify-between items-start mb-6">
             <h2 className="text-2xl font-bold leading-tight">
             Mission & <br /> Core Objectives
             </h2>
-            <div className="bg-gradient-to-br from-orange-400 to-red-600 p-3 rounded-xl">
+            <div className="bg-[#345583] p-3 rounded-xl">
             <Users className="w-8 h-8 text-white" />
             </div>
         </div>
@@ -445,7 +445,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
             <div className="px-10 md:px-0">
                 {/* Main Title */}
                 <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 md:mb-12 text-gray-800 pt-10">
-                    <span className="text-red-600">Exclusive benefits</span> of
+                    <span className="text-yellow-400">Exclusive benefits</span> of
                     joining this community
                 </h2>
 
@@ -461,10 +461,10 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                                 {menuItems.map((item, index) => (
                                     <li
                                         key={index}
-                                        className={`cursor-pointer p-4 rounded-xl flex items-center transition-all duration-300 border border-orange-400
+                                        className={`cursor-pointer p-4 rounded-xl flex items-center transition-all duration-300 border border-yellow-400 hover:shadow-yellow-300/50
                                                     ${
                                                         activeItem === item
-                                                            ? "bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 text-white shadow-md"
+                                                            ? "bg-gradient-to-r from-[#2e4c75] via-[#345583] to-yellow-300  text-white shadow-md"
                                                             : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                                                     }
                                                 `}
@@ -474,7 +474,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                                             className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg mr-4 transition-colors
                                                     ${
                                                         activeItem === item
-                                                            ? "bg-white text-red-600"
+                                                            ? "bg-white text-[#345583]"
                                                             : "bg-gray-200 text-gray-500"
                                                     }`}
                                         >
@@ -506,7 +506,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                                                 key={index}
                                                 className="flex items-start text-gray-700 text-sm md:text-base"
                                             >
-                                                <span className="text-red-600 font-bold text-lg leading-none mr-2">
+                                                <span className="text-[#345583] font-bold text-lg leading-none mr-2">
                                                     ◆
                                                 </span>
                                                 <span>{feature}</span>
@@ -529,12 +529,12 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
             {/* Topics You'll Learn */}
             <div className="flex flex-col md:flex-row  overflow-hidden  w-full px-10 gap-x-24 py-10">
                 {/* Left Section with Image and Gradient Background */}
-                <div className="flex-shrink-0 w-full md:w-2/5 relative rounded-b-none md:rounded-l-3xl rounded-3xl bg-gradient-to-b from-yellow-400 via-red-600 to-red-700">
+                <div className="flex-shrink-0 w-full md:w-2/5 relative  rounded-3xl bg-gradient-to-r from-[#1e3453] via-[#2c4871] to-yellow-300">
                     <div className="absolute inset-0"></div>
                     <img
-                        src="hero-img/WhatsApp Image 2025-09-19 at 5.38.32 PM.jpeg"
+                        src="/public/hero-img/img-3.jpeg"
                         alt="Speaker holding a microphone"
-                        className="w-full h-full object-cover rounded-3xl md:rounded-l-3xl z-10 p-6 md:p-8"
+                        className="w-full h-full object-cover rounded-3xl md:rounded-l-3xl z-10 "
                     />
                 </div>
 
@@ -547,7 +547,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                         {ContentData.map((topic, index) => (
                             <div
                                 key={index}
-                                className="flex items-center p-3 border-2 border-orange-400 rounded-lg shadow-sm transition-transform duration-200 hover:scale-105"
+                                className="flex items-center p-3 border-2 border-yellow-400 hover:shadow-yellow-300/50 rounded-lg shadow-sm transition-transform duration-200 hover:scale-105"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -615,7 +615,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                 {/* Right Section with Image and Content */}
                 <div className="relative flex flex-col md:flex-row w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl px-2">
                     {/* Gradient background div */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 rounded-3xl"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#1e3453] via-[#2c4871] to-yellow-300 rounded-3xl"></div>
 
                     {/* Content Section */}
                     <div className="relative z-10 p-8 md:p-12 w-full md:w-3/5 text-white">
@@ -704,7 +704,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
 
         <div className="relative">
             {/* Vertical Line - Hidden on small screens */}
-            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-red-500 to-yellow-500"></div>
+            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-[#2c4871]"></div>
 
             <div className="space-y-12">
                 {learningPathData.map((item, index) => (
@@ -716,9 +716,9 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                     >
                         {/* Text Box */}
                         <div className="w-full md:w-1/2 md:px-8">
-                            <div className="bg-white p-6 rounded-xl shadow-lg">
+                            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-blue-300/50">
                                 <div className="flex items-center space-x-3 mb-4">
-                                    <div className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold">
+                                    <div className="w-8 h-8 bg-[#2c4871] text-white rounded-full flex items-center justify-center font-bold">
                                         {item.step}
                                     </div>
                                     <h3 className="text-xl font-bold">
@@ -732,7 +732,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                         </div>
 
                         {/* Middle Dot - Hidden on small screens */}
-                        <div className="hidden md:flex w-12 h-12 bg-gradient-to-r from-red-500 to-yellow-500 rounded-full items-center justify-center relative z-10 my-6 md:my-0">
+                        <div className="hidden md:flex w-12 h-12 bg-blue-300 rounded-full items-center justify-center relative z-10 my-6 md:my-0">
                             <div className="w-6 h-6 bg-white rounded-full"></div>
                         </div>
 
@@ -748,12 +748,12 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
             {/* Get Started */}
             <div className="flex flex-col md:flex-row px-10 h-fit pb-10">
                 {/* Left Section with Image and Gradient Background */}
-                <div className="relative flex-shrink-0 px-5 h-4xl md:w-2/5 rounded-b-none md:rounded-l-3xl rounded-3xl bg-gradient-to-t from-yellow-400 via-red-600 to-red-700">
+                <div className="relative flex-shrink-0 px-5 h-4xl md:w-2/5 rounded-b-none md:rounded-l-3xl rounded-3xl bg-gradient-to-t from-yellow-400 via-[#2c4871] to-[#2c4871]">
                     <div className="absolute inset-0 rounded-3xl md:rounded-l-3xl"></div>
                     <img
                         src="hero-img/img-1-removebg-preview.png"
                         alt="Dr. Vaishali Gupta holding a book"
-                        className=" h-fit object-cover rounded-3xl md:rounded-l-3xl z-10 p-4  md:pt-15  md:w-[100vw]"
+                        className=" h-fit object-cover rounded-3xl md:rounded-l-3xl z-10 p-4  md:pt-15  md:w-[100vw]"   
                     />
                 </div>
 
@@ -770,7 +770,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                   flex justify-between items-center p-4 rounded-lg border-2
                   ${
                       step.isActive
-                          ? "border-transparent bg-gradient-to-t from-yellow-400 via-red-600 to-red-700 text-white"
+                          ? "border-transparent bg-[#2c4871] text-white"
                           : "border-gray-200 bg-white text-gray-700"
                   }
                   shadow-sm
@@ -780,7 +780,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                                     <span
                                         className={`
                       text-lg font-bold mr-4
-                      ${step.isActive ? "text-white" : "text-orange-500"}
+                      ${step.isActive ? "text-white" : "text-[#2c4871]"}
                     `}
                                     >
                                         {index < 9
@@ -792,7 +792,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                                     </span>
                                 </div>
                                 {step.isActive && (
-                                    <button className="bg-white text-red-500 font-bold py-2 px-6 rounded-lg shadow-md transition-transform duration-200 hover:scale-105">
+                                    <button className="bg-white text-[#2c4871] font-bold py-2 px-6 rounded-lg shadow-md transition-transform duration-200 hover:scale-105">
                                         {step.buttonText}
                                     </button>
                                 )}
