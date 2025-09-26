@@ -5,7 +5,7 @@ export default function AuthForm() {
     const [isLogin, setIsLogin] = useState(true);
 
     // Background video URL. Aap isey apne video URL se badal sakte hain.
-    const backgroundVideoURL = "../../public/hero-img/199580-910653705.mp4";
+    const backgroundVideoURL = "hero-img/199580-910653705.mp4";
 
     return (
         <div className="relative min-h-screen w-full">
