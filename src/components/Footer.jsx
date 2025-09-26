@@ -11,7 +11,7 @@ function Footer() {
                             <div className="w-35 h-10 rounded-full flex items-center justify-center">
                                 <Link to="/">
                                     <img
-                                    src="../../public/hero-img/logo.png"
+                                    src="hero-img/logo.png"
                                     alt="Rajshaili Logo"
                                     className="w-full h-10"  // Adjust the size of the logo
                                     />
