@@ -31,7 +31,7 @@ function About() {
                 <div className="w-full lg:w-1/2 flex justify-center">
                     <div className="bg-[#1F3A5A]/50 p-4 rounded-full shadow-2xl">
                         <img 
-                            src="/public/AboutImg/Gemini_Generated_Image_nbticbnbticbnbti-removebg-preview (1).png" 
+                            src="/AboutImg/Gemini_Generated_Image_nbticbnbticbnbti-removebg-preview (1).png" 
                             alt="Dr. R. K. Tailor" 
                             className="rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-yellow-400/50" 
                         />
@@ -64,7 +64,7 @@ function About() {
                 <div className="w-full lg:w-1/2 flex justify-center">
                     <div className="bg-[#192A41]/50 p-4 rounded-full shadow-2xl">
                         <img 
-                            src="../../public/AboutImg/Gemini_Generated_Image_ukkt42ukkt42ukkt.png" 
+                            src="/AboutImg/Gemini_Generated_Image_ukkt42ukkt42ukkt.png" 
                             alt="Shalini Salecha" 
                             className="rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-yellow-400/50" 
                         />
@@ -83,7 +83,7 @@ function About() {
             <div className="bg-[#1F3A5A]/50 backdrop-blur-md rounded-2xl p-8 sm:p-10 border border-blue-800/50 shadow-lg flex flex-col md:flex-row items-center gap-8">
                 <div className="w-full md:w-1/2 flex justify-center">
                 <img 
-                    src="../../public/AboutImg/all-img.jpeg" 
+                    src="/AboutImg/all-img.jpeg" 
                     alt="Awards Trophy" 
                     className="rounded-lg shadow-xl w-full max-w-md"
                 />

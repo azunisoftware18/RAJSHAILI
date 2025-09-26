@@ -532,9 +532,9 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                 <div className="flex-shrink-0 w-full md:w-2/5 relative  rounded-3xl bg-gradient-to-r from-[#1e3453] via-[#2c4871] to-yellow-300">
                     <div className="absolute inset-0"></div>
                     <img
-                        src="/public/hero-img/img-3.jpeg"
+                        src="/hero-img/img-3.jpeg"
                         alt="Speaker holding a microphone"
-                        className="w-full h-full object-cover rounded-3xl md:rounded-l-3xl z-10 "
+                        className="w-full h-full object-cover rounded-3xl md:rounded-l-3xl z-10"
                     />
                 </div>
 
@@ -687,7 +687,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                     {/* Image Section */}
                     <div className="relative z-20 w-full md:w-2/5 md:-mr-10 md:-mb-10 p-8 md:p-0">
                         <img
-                            src="hero-img/Gemini_Generated_Image_nbticbnbticbnbti-removebg-preview (1).png"
+                            src="/hero-img/Gemini_Generated_Image_nbticbnbticbnbti-removebg-preview (1).png"
                             alt="Dr. Vaishali Gupta holding a yellow cup"
                             className="w-[100vw] object-contain md:h-auto rounded-8xl md:pt-13"
                         />
