@@ -751,7 +751,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                 <div className="relative flex-shrink-0 px-5 h-4xl md:w-2/5 rounded-b-none md:rounded-l-3xl rounded-3xl bg-gradient-to-t from-yellow-400 via-[#2c4871] to-[#2c4871]">
                     <div className="absolute inset-0 rounded-3xl md:rounded-l-3xl"></div>
                     <img
-                        src="../../public/hero-img/img-2.jpeg"
+                        src="hero-img/img-2.jpeg"
                         alt="Dr. Vaishali Gupta holding a book"
                         className=" rounded-4xl z-10 p-4  md:pt-15  md:w-[100vw]"   
                     />
