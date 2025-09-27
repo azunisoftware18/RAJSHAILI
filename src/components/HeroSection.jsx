@@ -100,7 +100,7 @@ const RegistrationModal = ({ onClose }) => {
                             <input type="text" name="address" placeholder="Address" onChange={handleInputChange} className="w-full p-3 border border-gray-300 rounded-lg pl-10" />
                             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
                         </div>
-                        <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Register</button>
+                        <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Submit</button>
                     </form>
                 </div>
             </div>
