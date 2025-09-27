@@ -52,6 +52,7 @@ export default function AuthForm() {
                                 <input
                                     type="email"
                                     placeholder="Email"
+                                    name="email"
                                     className="w-full bg-white/10 border border-white/20 rounded-full py-3 pl-5 pr-10 outline-none focus:ring-2 focus:ring-yellow-200 placeholder-gray-300"
                                 />
                                 <Mail className="absolute right-4 top-3.5 text-gray-300" size={20} />
