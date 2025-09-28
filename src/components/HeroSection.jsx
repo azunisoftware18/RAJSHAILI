@@ -174,7 +174,7 @@ export default function HeroSection() {
                 </Link>
                 <Link to="/about#about-shalini" className="relative group text-center">
                     <img
-                        src="../../public/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png" 
+                        src="/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png" 
                         alt="Shalini Salecha - Rajshaili Institute"
                         className="object-contain w-[50vw] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg duration-300 group-hover:scale-105 transition-transform pt-25"
                     />
