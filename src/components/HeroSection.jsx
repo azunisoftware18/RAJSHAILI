@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, HashRouter } from "react-router-dom"; 
 import { User, Mail, Phone, MapPin, X } from 'lucide-react';
+import axios from "axios";
 
 // Custom CSS animations ke liye style tag
 const CustomStyles = () => (
@@ -46,7 +47,7 @@ const FaPlayCircle = (props) => (
 
 // Registration Form Modal
 const RegistrationModal = ({ onClose }) => {
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '', address: '' });
+    const [formData, setFormData] = useState({ name: '', email: '', number: '', address: '' });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -56,13 +57,13 @@ const RegistrationModal = ({ onClose }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Simple validation
-        if (!formData.name || !formData.email || !formData.phone || !formData.address) {
+        if (!formData.name || !formData.email || !formData.number || !formData.address) {
             alert("Please fill out all fields.");
             return;
         }
-        console.log("Form Data:", formData);
+         axios.post("http://localhost:8000/api/enrollment-create",formData);        
         alert("Registration Successful!");
-        onClose(); // Close modal after submission
+        onClose(); // Close modal after submission                                                                                                                                                                                                                                                  
     };
     
     return (
@@ -93,7 +94,7 @@ const RegistrationModal = ({ onClose }) => {
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
                         </div>
                         <div className="relative">
-                            <input type="tel" name="phone" placeholder="Phone Number" onChange={handleInputChange} className="w-full p-3 border border-gray-300 rounded-lg pl-10" />
+                            <input type="tel" name="number" placeholder="Phone Number" onChange={handleInputChange} className="w-full p-3 border border-gray-300 rounded-lg pl-10" />
                             <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
                         </div>
                         <div className="relative">
@@ -160,13 +161,31 @@ export default function HeroSection() {
                     <img
                         src="/hero-img/hero.png" 
                         alt="Shalini Salecha - Rajshaili Institute"
-                        className="object-contain w-[100vw] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg duration-300 group-hover:scale-105 transition-transform pt-25"
+                        className="object-contain w-[50vw] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg duration-300 group-hover:scale-105 transition-transform pt-25"
                     />
+                    
                     <div className="absolute top-0 left-0 right-0 pt-8 md:pt-[44rem]">
                         <span className="text-white text-2xl font-bold tracking-wider group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_40%)]">
                             Shalini Salecha
                         </span>
                     </div>
+
+                    
+                </Link>
+                <Link to="/about#about-shalini" className="relative group text-center">
+                    <img
+                        src="../../public/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png" 
+                        alt="Shalini Salecha - Rajshaili Institute"
+                        className="object-contain w-[50vw] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg duration-300 group-hover:scale-105 transition-transform pt-25"
+                    />
+                    
+                    <div className="absolute top-0 left-0 right-0 pt-8 md:pt-[43.8rem]">
+                        <span className="text-white text-2xl font-bold tracking-wider group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_40%)]">
+                            Dr. R. K. Tailor
+                        </span>
+                    </div>
+
+                    
                 </Link>
             </div>
         </div>

@@ -51,9 +51,9 @@ export default function Navbar() {
                             <Link to="/courses" className={linkClasses}>Courses</Link>
                             <Link to="/about" className={linkClasses}>About</Link>
                             <Link to="/contact" className={linkClasses}>Contact</Link>
-                            <Link to="/login" className="bg-yellow-400 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-300  shadow-yellow-300/50 transition-all duration-300 shadow-md hover:shadow-lg">
+                            {/* <Link to="/login" className="bg-yellow-400 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-300  shadow-yellow-300/50 transition-all duration-300 shadow-md hover:shadow-lg">
                                 Login
-                            </Link>
+                            </Link> */}
                         </nav>
 
                         {/* Mobile Menu Button */}
