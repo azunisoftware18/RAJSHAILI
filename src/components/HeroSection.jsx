@@ -48,22 +48,62 @@ const FaPlayCircle = (props) => (
 // Registration Form Modal
 const RegistrationModal = ({ onClose }) => {
     const [formData, setFormData] = useState({ name: '', email: '', number: '', address: '' });
+    const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.name.trim()) newErrors.name = "Name is required.";
+        
+        if (!formData.email.trim()) {
+            newErrors.email = "Email is required.";
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = "Email address is invalid.";
+        }
+
+        if (!formData.number.trim()) {
+            newErrors.number = "Phone number is required.";
+        } else if (!/^\d{10}$/.test(formData.number)) {
+            newErrors.number = "Phone number must be exactly 10 digits.";
+        }
+
+        if (!formData.address.trim()) newErrors.address = "Address is required.";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        // Clear error when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: null }));
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simple validation
-        if (!formData.name || !formData.email || !formData.number || !formData.address) {
-            alert("Please fill out all fields.");
+        if (!validateForm()) {
             return;
         }
-         axios.post("https://api.raj-shaili.com/api/enrollment-create",formData);        
-        alert("Registration Successful!");
-        onClose(); // Close modal after submission                                                                                                                                                                                                                                                  
+
+        setIsSubmitting(true);
+
+        try {
+            // Aapka actual database saving logic yahan aayega
+            await axios.post("https://api.raj-shaili.com/api/enrollment-create", formData);
+            
+            console.log("Form Data:", formData);
+            alert("Registration Successful!");
+            onClose(); // Safal hone par hi modal band karein
+
+        } catch (error) {
+            console.error("Submission failed:", error);
+            alert("There was an error submitting your form. Please try again.");
+        } finally {
+            setIsSubmitting(false); // Loading state ko hatayein
+        }
     };
     
     return (
@@ -75,33 +115,60 @@ const RegistrationModal = ({ onClose }) => {
                     <p className="text-gray-300 mb-8">Discover the power of astrology and unlock the secrets of your destiny</p>
                     <img
                         src="hero-img/46992-removebg-preview.png" 
-                        alt="Shalini Salecha - Rajshaili Institute"
-                        className="object-contain w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg duration-300 group-hover:scale-105 transition-transform animate-spin-slow"
+                        alt="Astrology Wheel"
+                        className="object-contain w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
                     />
                 </div>
                 {/* Right Side */}
                 <div className="w-full md:w-3/5 p-8 text-gray-800 relative">
                     <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"><X size={24}/></button>
                     <h2 className="text-3xl font-bold mb-2">Enrollment now</h2>
-                    <p className="text-gray-500 mb-6">Enter your information to enrollment for the Rajshaili.</p>
+                    <p className="text-gray-500 mb-6">Enter your information to enroll for the Rajshaili.</p>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="relative">
-                            <input type="text" name="name" placeholder="Full Name" onChange={handleInputChange} className="w-full p-3 border border-gray-300 rounded-lg pl-10" />
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
+                        {/* Name */}
+                        <div>
+                            <div className="relative">
+                                <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.name ? 'border-red-500' : 'border-gray-300'}`} />
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
+                            </div>
+                            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                         </div>
-                         <div className="relative">
-                            <input type="email" name="email" placeholder="Your email" onChange={handleInputChange} className="w-full p-3 border border-gray-300 rounded-lg pl-10" />
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
+                        {/* Email */}
+                         <div>
+                            <div className="relative">
+                                <input type="email" name="email" placeholder="Your email" value={formData.email} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.email ? 'border-red-500' : 'border-gray-300'}`} />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
+                            </div>
+                             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                         </div>
-                        <div className="relative">
-                            <input type="tel" name="number" placeholder="Phone Number" onChange={handleInputChange} className="w-full p-3 border border-gray-300 rounded-lg pl-10" />
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
+                        {/* Phone Number */}
+                        <div>
+                            <div className="relative">
+                                <input type="tel" name="number" placeholder="Phone Number" value={formData.number} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.number ? 'border-red-500' : 'border-gray-300'}`} />
+                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
+                            </div>
+                             {errors.number && <p className="text-red-500 text-sm mt-1">{errors.number}</p>}
                         </div>
-                        <div className="relative">
-                            <input type="text" name="address" placeholder="Address" onChange={handleInputChange} className="w-full p-3 border border-gray-300 rounded-lg pl-10" />
-                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
+                        {/* Address */}
+                        <div>
+                             <div className="relative">
+                                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.address ? 'border-red-500' : 'border-gray-300'}`} />
+                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
+                            </div>
+                            {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                         </div>
-                        <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Submit</button>
+
+                        <button 
+                            type="submit" 
+                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:bg-gray-400"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="animate-spin mr-2" /> Submitting...
+                                </>
+                            ) : 'Submit'}
+                        </button>
                     </form>
                 </div>
             </div>
@@ -166,7 +233,7 @@ export default function HeroSection() {
                     
                     <div className="absolute top-0 left-0 right-0 pt-8 md:pt-[44rem]">
                         <span className="text-white text-2xl font-bold tracking-wider group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_40%)]">
-                            Shalini Salecha
+                           Acharya Shalini Salecha
                         </span>
                     </div>
 

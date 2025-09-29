@@ -47,7 +47,7 @@ function About() {
             <div className="flex flex-col lg:flex-row-reverse items-center gap-8 lg:gap-12">
                 <div className="w-full lg:w-1/2 text-center lg:text-left">
                 <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-                    Meet <span className="text-yellow-400">Dr.Shalini Salecha</span>
+                    Meet <span className="text-yellow-400"> Acharya Shalini Salecha</span>
                 </h1>
                 <p className="text-lg text-gray-300 mb-4">
                     Shalini Salecha is a distinguished and well-regarded voice in Vedic Astrology and Vastu Shastra. Based in Jaipur, she is a trusted consultant for those seeking clarity and direction.

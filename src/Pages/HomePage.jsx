@@ -615,7 +615,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                 {/* Right Section with Image and Content */}
                 <div className="relative flex flex-col md:flex-row w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl px-2">
                     {/* Gradient background div */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#1e3453] via-[#2c4871] to-yellow-300 rounded-3xl"></div>
+                    <div className="absolute inset-0 bg-[#1e3453] rounded-3xl"></div>
 
                     {/* Content Section */}
                     <div className="relative z-10 p-8 md:p-12 w-full md:w-3/5 text-white">
@@ -623,7 +623,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                             Welcome to Rajshaili: The Institute of Divine Knowledge
                         </h1>
                         <p className="text-sm md:text-base mb-6 font-medium">
-                            Founded by distinguished academic Dr. R. K. Tailor,
+                            Founded by distinguished academic
                             Rajshaili is a scholarly sanctuary dedicated to holistic education.
                             Our core mission is to integrate the profound wisdom of Vastu and Astrology
                             with contemporary psychology for the modern world.
@@ -685,11 +685,11 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                     </div>
 
                     {/* Image Section */}
-                    <div className="relative z-20 w-full md:w-2/5 md:-mr-10 md:-mb-10 p-8 md:p-0">
+                    <div className="relative z-20 w-full md:w-2/5 md:-mr-10 md:-mb-10 p-8 md:p-0  mt-10 ">
                         <img
-                            src="hero-img/Gemini_Generated_Image_nbticbnbticbnbti-removebg-preview (1).png"
+                            src="../../public/hero-img/46992-removebg-preview.png"
                             alt="Dr. Vaishali Gupta holding a yellow cup"
-                            className="w-[100vw] object-contain md:h-auto rounded-8xl md:pt-13"
+                            className="w-[100vw] object-contain md:h-auto rounded-8xl md:pt-13 animate-spin-slow"
                         />
                     </div>
                 </div>
@@ -753,7 +753,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                     <img
                         src="hero-img/img-2.jpeg"
                         alt="Dr. Vaishali Gupta holding a book"
-                        className=" rounded-4xl z-10 p-4  md:pt-15  md:w-[100vw]"   
+                        className=" rounded-4xl z-10 p-4  md:pt-15  md:w-[100vw]"
                     />
                 </div>
 
