@@ -687,7 +687,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
                     {/* Image Section */}
                     <div className="relative z-20 w-full md:w-2/5 md:-mr-10 md:-mb-10 p-8 md:p-0  mt-10 ">
                         <img
-                            src="../../public/hero-img/46992-removebg-preview.png"
+                            src="hero-img/46992-removebg-preview.png"
                             alt="Dr. Vaishali Gupta holding a yellow cup"
                             className="w-[100vw] object-contain md:h-auto rounded-8xl md:pt-13 animate-spin-slow"
                         />
