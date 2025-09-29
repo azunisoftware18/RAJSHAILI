@@ -10,7 +10,7 @@ export default function Enrollments() {
   useEffect(() => {
     const fetchEnrollments = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/enrollment-get");
+        const response = await axios.get("https://api.raj-shaili.com/api/enrollment-get");
         setEnrollments(response.data.data);
         setError(null);
       } catch (error) {
@@ -27,7 +27,7 @@ export default function Enrollments() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this enrollment?")) {
       try {
-        await axios.delete(`http://localhost:8000/api/enrollment-delete/${id}`);
+        await axios.delete(`https://api.raj-shaili.com/api/enrollment-delete/${id}`);
         setEnrollments(enrollments.filter((item) => item.id !== id));
         alert("Enrollment deleted successfully!");
       } catch (error) {

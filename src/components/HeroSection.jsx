@@ -61,7 +61,7 @@ const RegistrationModal = ({ onClose }) => {
             alert("Please fill out all fields.");
             return;
         }
-         axios.post("http://localhost:8000/api/enrollment-create",formData);        
+         axios.post("https://api.raj-shaili.com/api/enrollment-create",formData);        
         alert("Registration Successful!");
         onClose(); // Close modal after submission                                                                                                                                                                                                                                                  
     };
