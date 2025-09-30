@@ -144,7 +144,7 @@ const RegistrationModal = ({ onClose }) => {
                         {/* Phone Number */}
                         <div>
                             <div className="relative">
-                                <input type="tel" name="number" placeholder="Phone Number" value={formData.number} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.number ? 'border-red-500' : 'border-gray-300'}`} />
+                                <input type="tel" name="number" placeholder="Phone Number" value={formData.number} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.number ? 'border-red-500' : 'border-gray-300'}`} maxLength={10}/>
                                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
                             </div>
                              {errors.number && <p className="text-red-500 text-sm mt-1">{errors.number}</p>}

@@ -64,6 +64,11 @@ function Footer() {
                                     Privacy Policy
                                 </Link>
                             </li>
+                            <li>
+                                <Link to="/testimonials" className="hover:text-gray-500">
+                                    Community
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <div>

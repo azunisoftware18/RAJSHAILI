@@ -18,6 +18,7 @@ import AddCourseForm from './Pages/admin/AddCourseForm.jsx';
 import UserTable from './Pages/admin/UserData.jsx';
 import ContactMessage from './Pages/admin/ContactMessage.jsx';
 import Enrollments from './Pages/admin/Enrollments.jsx';
+import Testimonials from './Pages/testimonials.jsx';
 // import CourseTable from './Pages/admin/CourseData.jsx';
 
 // Define your router with routes
@@ -32,6 +33,7 @@ const router = createBrowserRouter(
         <Route path="courses" element={<CoursesPage />} />
         <Route path="helpcare" element={<HelpCare />} />
         <Route path="privacypolicy" element={<PrivacyPolicy />} />
+        <Route path='testimonials' element={<Testimonials/>}/>
         {/* <Route path="login" element={<LoginForm/>}/> */}
       </Route>
 

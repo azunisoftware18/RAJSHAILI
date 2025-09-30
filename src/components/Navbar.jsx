@@ -50,7 +50,7 @@ export default function Navbar() {
                             <Link to="/" className={linkClasses}>Home</Link>
                             <Link to="/courses" className={linkClasses}>Courses</Link>
                             <Link to="/about" className={linkClasses}>About</Link>
-                            <Link to="/contact" className={linkClasses}>Contact</Link>
+                            <Link to="/contact" className={linkClasses}>Contact</Link>  
                             {/* <Link to="/login" className="bg-yellow-400 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-300  shadow-yellow-300/50 transition-all duration-300 shadow-md hover:shadow-lg">
                                 Login
                             </Link> */}
@@ -75,9 +75,9 @@ export default function Navbar() {
                         <Link to="/courses" className="text-white text-lg hover:text-yellow-400" onClick={closeMenu}>Courses</Link>
                         <Link to="/about" className="text-white text-lg hover:text-yellow-400" onClick={closeMenu}>About</Link>
                         <Link to="/contact" className="text-white text-lg hover:text-yellow-400" onClick={closeMenu}>Contact</Link>
-                        <Link to="/login" className="bg-yellow-400 text-gray-900 font-bold py-2 px-8 rounded-full hover:bg-yellow-300 transition-all duration-300 mt-4" onClick={closeMenu}>
+                        {/* <Link to="/login" className="bg-yellow-400 text-gray-900 font-bold py-2 px-8 rounded-full hover:bg-yellow-300 transition-all duration-300 mt-4" onClick={closeMenu}>
                             Login
-                        </Link>
+                        </Link> */}
                     </nav>
                 </div>
             </header>
