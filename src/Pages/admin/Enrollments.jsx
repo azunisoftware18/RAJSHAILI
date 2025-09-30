@@ -24,8 +24,8 @@ const mockEnrollments = [
 
 // Login Form Component
 const LoginForm = ({ onLoginSuccess }) => {
-    const [email, setEmail] = useState('admin@rajshaili.com');
-    const [password, setPassword] = useState('password123');
+    const [email, setEmail] = useState(''); // Initial value ko khaali kar diya gaya hai
+    const [password, setPassword] = useState(''); // Initial value ko khaali kar diya gaya hai
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -56,14 +56,14 @@ const LoginForm = ({ onLoginSuccess }) => {
                     <div>
                         <label className="text-sm font-medium text-gray-300 mb-2 block">Email</label>
                         <div className="relative">
-                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         </div>
                     </div>
                     <div>
                         <label className="text-sm font-medium text-gray-300 mb-2 block">Password</label>
                         <div className="relative">
-                            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+                            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
                             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         </div>
                     </div>
@@ -200,3 +200,4 @@ export default function AdminEnrollmentsPage() {
 
     return <EnrollmentsDisplay />;
 }
+
