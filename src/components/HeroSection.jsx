@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, HashRouter } from "react-router-dom"; 
-import { User, Mail, Phone, MapPin, X } from 'lucide-react';
+import { User, Mail, Phone, MapPin, X, Loader2 } from 'lucide-react';
 import axios from "axios";
 
 // Custom CSS animations ke liye style tag
