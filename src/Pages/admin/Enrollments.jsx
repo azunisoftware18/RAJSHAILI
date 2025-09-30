@@ -1,6 +1,6 @@
   import React, { useEffect, useState } from 'react';
   import axios from "axios";
-  import { User, Mail, Phone, MapPin, Calendar, Trash2, Loader2, Info } from 'lucide-react';
+  import { User, Mail, Phone, MapPin, Calendar,Loader2, Info } from 'lucide-react';
 
   export default function Enrollments() {
     const [enrollments, setEnrollments] = useState([]);
