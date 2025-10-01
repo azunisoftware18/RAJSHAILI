@@ -57,7 +57,7 @@ function SidebarNav() {
                     p-4 space-y-2
                     md:block ${isOpen ? 'block' : 'hidden'}
                 `}>
-                    {/* <Link to="/admin" onClick={handleLinkClick} className={getLinkClass("/admin")}>
+                    <Link to="/admin" onClick={handleLinkClick} className={getLinkClass("/admin")}>
                         <Home className="w-5 h-5 mr-3" />
                         Dashboard
                     </Link>
@@ -84,7 +84,7 @@ function SidebarNav() {
                     <Link to="/admin/subscription" onClick={handleLinkClick} className={getLinkClass("/admin/subscription")}>
                         <DollarSign className="w-5 h-5 mr-3" />
                         Subscription
-                    </Link> */}
+                    </Link>
                     <Link to="/admin/enrollments" onClick={handleLinkClick} className={getLinkClass("/admin/subscription")}>
                         <User className="w-5 h-5 mr-3" />
                         Enrollments

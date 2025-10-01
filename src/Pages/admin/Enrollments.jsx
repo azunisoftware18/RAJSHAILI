@@ -49,7 +49,7 @@ const LoginForm = ({ onLoginSuccess }) => {
         <div className="flex items-center justify-center min-h-screen bg-[#192A41]">
             <div className="w-full max-w-md p-8 bg-[#1F3A5A]/50 backdrop-blur-md rounded-2xl shadow-lg border border-blue-800/50">
                 <header className="text-center mb-8">
-                    <h1 className="text-4xl font-extrabold text-white">Admin Login</h1>
+                    <h1 className="text-4xl font-extrabold text-white">Enrollment Login</h1>
                     <p className="text-gray-400 mt-2">Access the enrollments dashboard.</p>
                 </header>
                 <form onSubmit={handleLogin} className="space-y-6">

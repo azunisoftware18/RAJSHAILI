@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, HashRouter } from "react-router-dom"; 
-import { User, Mail, Phone, MapPin, X, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, MapPin, X, Loader2, Link as LinkIcon } from 'lucide-react';
 import axios from "axios";
 
 // Custom CSS animations ke liye style tag
@@ -21,6 +21,7 @@ const CustomStyles = () => (
         from { transform: scale(0.9) translateY(10px); opacity: 0; }
         to { transform: scale(1) translateY(0); opacity: 1; }
     }
+    .animate-spin-slow { animation: spin 10s linear infinite; }
     
     .opacity-0 { opacity: 0; }
     .delay-200 { animation-delay: 200ms; }
@@ -50,23 +51,21 @@ const RegistrationModal = ({ onClose }) => {
     const [formData, setFormData] = useState({ name: '', email: '', number: '', address: '' });
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const validateForm = () => {
         const newErrors = {};
         if (!formData.name.trim()) newErrors.name = "Name is required.";
-        
         if (!formData.email.trim()) {
             newErrors.email = "Email is required.";
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = "Email address is invalid.";
         }
-
         if (!formData.number.trim()) {
             newErrors.number = "Phone number is required.";
         } else if (!/^\d{10}$/.test(formData.number)) {
             newErrors.number = "Phone number must be exactly 10 digits.";
         }
-
         if (!formData.address.trim()) newErrors.address = "Address is required.";
 
         setErrors(newErrors);
@@ -76,7 +75,6 @@ const RegistrationModal = ({ onClose }) => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        // Clear error when user starts typing
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: null }));
         }
@@ -84,25 +82,17 @@ const RegistrationModal = ({ onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) {
-            return;
-        }
+        if (!validateForm()) return;
 
         setIsSubmitting(true);
-
         try {
-            // Aapka actual database saving logic yahan aayega
             await axios.post("https://api.raj-shaili.com/api/enrollment-create", formData);
-            
-            console.log("Form Data:", formData);
-            alert("Registration Successful!");
-            onClose(); // Safal hone par hi modal band karein
-
+            setIsSuccess(true); // Show success screen instead of closing
         } catch (error) {
             console.error("Submission failed:", error);
             alert("There was an error submitting your form. Please try again.");
         } finally {
-            setIsSubmitting(false); // Loading state ko hatayein
+            setIsSubmitting(false);
         }
     };
     
@@ -116,60 +106,56 @@ const RegistrationModal = ({ onClose }) => {
                     <img
                         src="hero-img/46992-removebg-preview.png" 
                         alt="Astrology Wheel"
-                        className="object-contain w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
+                        className="object-contain w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg animate-spin-slow"
                     />
                 </div>
                 {/* Right Side */}
                 <div className="w-full md:w-3/5 p-8 text-gray-800 relative">
                     <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"><X size={24}/></button>
-                    <h2 className="text-3xl font-bold mb-2">Enrollment now</h2>
-                    <p className="text-gray-500 mb-6">Enter your information to enroll for the Rajshaili.</p>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Name */}
-                        <div>
-                            <div className="relative">
-                                <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.name ? 'border-red-500' : 'border-gray-300'}`} />
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
-                            </div>
-                            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                    
+                    {isSuccess ? (
+                        <div className="text-center flex flex-col justify-center h-full">
+                            <h2 className="text-3xl font-bold mb-4 text-green-600">Registration Successful!</h2>
+                            <p className="text-gray-600 mb-8">Thank you for enrolling. You can now join the meeting using the link below.</p>
+                            <a 
+                                href="https://meet.google.com/your-meeting-code-here" // Yahan apna Google Meet link daalein
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <LinkIcon size={20} /> Join Google Meet
+                            </a>
+                            <button onClick={onClose} className="mt-4 text-sm text-gray-500 hover:underline">Close</button>
                         </div>
-                        {/* Email */}
-                         <div>
-                            <div className="relative">
-                                <input type="email" name="email" placeholder="Your email" value={formData.email} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.email ? 'border-red-500' : 'border-gray-300'}`} />
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
-                            </div>
-                             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-                        </div>
-                        {/* Phone Number */}
-                        <div>
-                            <div className="relative">
-                                <input type="tel" name="number" placeholder="Phone Number" value={formData.number} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.number ? 'border-red-500' : 'border-gray-300'}`} maxLength={10}/>
-                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
-                            </div>
-                             {errors.number && <p className="text-red-500 text-sm mt-1">{errors.number}</p>}
-                        </div>
-                        {/* Address */}
-                        <div>
-                             <div className="relative">
-                                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.address ? 'border-red-500' : 'border-gray-300'}`} />
-                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
-                            </div>
-                            {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
-                        </div>
-
-                        <button 
-                            type="submit" 
-                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:bg-gray-400"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="animate-spin mr-2" /> Submitting...
-                                </>
-                            ) : 'Submit'}
-                        </button>
-                    </form>
+                    ) : (
+                        <>
+                            <h2 className="text-3xl font-bold mb-2">Enrollment now</h2>
+                            <p className="text-gray-500 mb-6">Enter your information to enroll for the Rajshaili.</p>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                {/* Fields */}
+                                <div>
+                                    <div className="relative"><input type="text" name="name" placeholder="Full Name" onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.name ? 'border-red-500' : 'border-gray-300'}`} /><User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/></div>
+                                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                                </div>
+                                <div>
+                                    <div className="relative"><input type="email" name="email" placeholder="Your email" onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.email ? 'border-red-500' : 'border-gray-300'}`} /><Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/></div>
+                                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                                </div>
+                                <div>
+                                    <div className="relative"><input type="tel" name="number" placeholder="Phone Number" onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.number ? 'border-red-500' : 'border-gray-300'}`} maxLength={10}/><Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/></div>
+                                    {errors.number && <p className="text-red-500 text-sm mt-1">{errors.number}</p>}
+                                </div>
+                                <div>
+                                    <div className="relative"><input type="text" name="address" placeholder="Address" onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.address ? 'border-red-500' : 'border-gray-300'}`} /><MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/></div>
+                                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+                                </div>
+                                
+                                <button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:bg-gray-400">
+                                    {isSubmitting ? (<><Loader2 className="animate-spin mr-2" /> Submitting...</>) : 'Submit'}
+                                </button>
+                            </form>
+                        </>
+                    )}
                 </div>
             </div>
         </div>
@@ -180,101 +166,62 @@ export default function HeroSection() {
   const [openVideo, setOpenVideo] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
-  // useEffect hook to open the form automatically after a delay
   useEffect(() => {
     const timer = setTimeout(() => {
         setOpenForm(true);
-    }, 2000); // 2-second delay
-
-    return () => clearTimeout(timer); // Cleanup the timer
-  }, []); // Empty dependency array means this runs only once when the component mounts
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
         <section className="w-full overflow-hidden relative bg-[#192A41] p-5">
         <CustomStyles />
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between min-h-screen pt-20 md:pt-0">
-            {/* Left Text and Buttons */}
-            <div className="flex-1 text-white text-center md:text-left px-4 md:px-8 z-10">
-                <p className="mb-4 text-sm md:text-base font-semibold tracking-widest text-gray-400 opacity-0 animate-fadeInUp">
-                    ANCIENT WISDOM • MODERN CLARITY
-                </p>
-
+            {/* Left Text */}
+            <div className="w-full md:w-5/12 text-white text-center md:text-left px-4 md:px-8 z-10">
+                <p className="mb-4 text-sm md:text-base font-semibold tracking-widest text-gray-400 opacity-0 animate-fadeInUp">ANCIENT WISDOM • MODERN CLARITY</p>
                 <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white opacity-0 animate-fadeInUp delay-200">
-                    Rajshaili: The Institute of{" "}
-                    <span className="text-yellow-400">Divine Knowledge</span>
+                    Rajshaili: The Institute of{" "}<span className="text-yellow-400">Divine Knowledge</span>
                 </h1>
-
                 <p className="text-base md:text-lg mb-8 font-light max-w-xl mx-auto md:mx-0 text-gray-300 opacity-0 animate-fadeInUp delay-400">
-                    Bridging Vedic Astrology, Vastu & Mental Health with modern science to
-                    empower you with clarity, peace & purpose.
+                    Bridging Vedic Astrology, Vastu & Mental Health with modern science to empower you with clarity, peace & purpose.
                 </p>
-
                 <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-6 opacity-0 animate-fadeInUp delay-600">
-                    <Link to="/courses" className="bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300  shadow-yellow-300/50 hover:scale-105 transition-all duration-300 cursor-pointer">
+                    <Link to="/courses" className="bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 shadow-yellow-300/50 hover:scale-105 transition-all duration-300 cursor-pointer">
                         Explore Our Courses
                     </Link>
-                    <button 
-                        onClick={() => setOpenVideo(true)}
-                        className="flex items-center text-white font-semibold hover:text-yellow-400 transition-colors"
-                    >
+                    <button onClick={() => setOpenVideo(true)} className="flex items-center text-white font-semibold hover:text-yellow-400 transition-colors">
                         <FaPlayCircle className="mr-2 h-6 w-6" /> Watch Intro
                     </button>
                 </div>
             </div>
 
-            {/* Right Image */}
-            <div className="relative w-full md:w-1/2 flex justify-center items-center opacity-0 animate-fadeIn delay-400 mt-10 md:mt-0">
-                <Link to="/about#about-shalini" className="relative group text-center">
-                    <img
-                        src="/hero-img/hero.png" 
-                        alt="Shalini Salecha - Rajshaili Institute"
-                        className="object-contain w-[50vw] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg duration-300 group-hover:scale-105 transition-transform pt-25"
-                    />
-                    
-                    <div className="absolute top-0 left-0 right-0 pt-8 md:pt-[44rem]">
-                        <span className="text-white text-2xl font-bold tracking-wider group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_40%)]">
-                           Acharya Shalini Salecha
+            {/* Right Images */}
+            <div className="w-full md:w-7/12 flex flex-row items-start justify-center gap-2 md:gap-4 opacity-0 animate-fadeIn delay-400 mt-10 md:mt-0 px-2">
+                <Link to="/about#about-shalini" className="relative group text-center w-1/2">
+                    <img src="/hero-img/hero.png" alt="Shalini Salecha" className="object-contain w-full duration-300 group-hover:scale-105 transition-transform md:pt-31"/>
+                    <div className="absolute bottom-2 left-0 right-0 px-1">
+                        <span className="text-white text-xs sm:text-base md:text-xl font-bold tracking-tight group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_50%)]">
+                            Acharya Shalini Salecha
                         </span>
                     </div>
-
-                    
                 </Link>
-                <Link to="/about#about-shalini" className="relative group text-center">
-                    <img
-                        src="/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png" 
-                        alt="Shalini Salecha - Rajshaili Institute"
-                        className="object-contain w-[50vw] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg duration-300 group-hover:scale-105 transition-transform pt-25"
-                    />
-                    
-                    <div className="absolute top-0 left-0 right-0 pt-8 md:pt-[43.8rem]">
-                        <span className="text-white text-2xl font-bold tracking-wider group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_40%)]">
+                <Link to="/about#about-dr-tailor" className="relative group text-center w-1/2">
+                    <img src="/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png" alt="Dr. R. K. Tailor" className="object-contain w-full duration-300 group-hover:scale-105 transition-transform md:pt-31" />
+                    <div className="absolute bottom-2 left-0 right-0 px-1">
+                        <span className="text-white text-xs sm:text-base md:text-xl font-bold tracking-tight group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_50%)]">
                             Dr. R. K. Tailor
                         </span>
                     </div>
-
-                    
                 </Link>
             </div>
         </div>
 
         {/* Video Modal */}
         {openVideo && (
-            <div
-                className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-fadeIn"
-                onClick={() => setOpenVideo(false)}
-            >
-                <div
-                    className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <iframe
-                        className="w-full aspect-video rounded-xl"
-                        src="https://www.youtube.com/embed/AIJGPal3NM8?autoplay=1&rel=0"
-                        title="YouTube video player"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    ></iframe>
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-fadeIn" onClick={() => setOpenVideo(false)}>
+                <div className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                    <iframe className="w-full aspect-video rounded-xl" src="https://www.youtube.com/embed/AIJGPal3NM8?autoplay=1&rel=0" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                 </div>
             </div>
         )}
@@ -282,7 +229,6 @@ export default function HeroSection() {
         {/* Registration Modal */}
         {openForm && <RegistrationModal onClose={() => setOpenForm(false)} />}
         </section>
-    
   );
 }
 

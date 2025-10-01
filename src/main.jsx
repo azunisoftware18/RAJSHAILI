@@ -18,7 +18,6 @@ import AddCourseForm from './Pages/admin/AddCourseForm.jsx';
 import UserTable from './Pages/admin/UserData.jsx';
 import ContactMessage from './Pages/admin/ContactMessage.jsx';
 import Enrollments from './Pages/admin/Enrollments.jsx';
-import Testimonials from './Pages/testimonials.jsx';
 // import CourseTable from './Pages/admin/CourseData.jsx';
 
 // Define your router with routes
@@ -33,20 +32,19 @@ const router = createBrowserRouter(
         <Route path="courses" element={<CoursesPage />} />
         <Route path="helpcare" element={<HelpCare />} />
         <Route path="privacypolicy" element={<PrivacyPolicy />} />
-        <Route path='testimonials' element={<Testimonials/>}/>
+        <Route path="enrollments" element={<Enrollments/>}/>
         {/* <Route path="login" element={<LoginForm/>}/> */}
       </Route>
 
       {/* Admin Routes */}
-      <Route path="/admin/" element={<Enrollments />}>
-      {/* <Route path="/admin/" element={<AdminLayouts />}> */}
+      <Route path="/admin/" element={<AdminLayouts />}>
         <Route index={true} element={<Dashboard/>} />
         <Route path="aboutfrom" element={<AboutForm />} />
         <Route path="settings" element={<MainSettings />} />
         <Route path="user" element={<UserTable/>}/>
         <Route path="courseform" element={<AddCourseForm/>}/>
         <Route path="message" element={<ContactMessage/>}/>
-        {/* <Route path="enrollments" element={<Enrollments/>}/> */}
+        {/* <Route path="form" element={<Enrollments />}> */}
       </Route>
     </>
   )
