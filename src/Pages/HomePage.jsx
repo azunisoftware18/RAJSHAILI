@@ -806,7 +806,7 @@ const [activeItem, setActiveItem] = useState(menuItems[0]);
             <section className="py-20 bg-gradient-to-r bg-orange-100">
                 <div className=" px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl md:text-4xl font-bold mb-8">
-                        Vastu Practitioners Certificate Courses
+                        Rajshaili Practitioners Certificate Courses
                     </h2>
                     <p className="text-xl mb-12 max-w-3xl mx-auto">
                         Get certified as a professional Vedic Vastu practitioner

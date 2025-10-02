@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
-import { User, Mail, Phone, MapPin, Calendar, Loader2, Info, Trash2, Download, Lock, LogIn } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, Loader2, Info, Trash2, Download, Lock, LogIn, LogOut } from 'lucide-react';
 
 // Sample data agar API se connection na ho paye
 const mockEnrollments = [
@@ -24,8 +24,8 @@ const mockEnrollments = [
 
 // Login Form Component
 const LoginForm = ({ onLoginSuccess }) => {
-    const [email, setEmail] = useState(''); // Initial value ko khaali kar diya gaya hai
-    const [password, setPassword] = useState(''); // Initial value ko khaali kar diya gaya hai
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -37,6 +37,7 @@ const LoginForm = ({ onLoginSuccess }) => {
         // Simple hardcoded validation
         setTimeout(() => {
             if (email === 'admin@rajshaili.com' && password === 'password123') {
+                localStorage.setItem('isAdminAuthenticated', 'true'); // Login status save karein
                 onLoginSuccess();
             } else {
                 setError('Invalid email or password.');
@@ -49,7 +50,7 @@ const LoginForm = ({ onLoginSuccess }) => {
         <div className="flex items-center justify-center min-h-screen bg-[#192A41]">
             <div className="w-full max-w-md p-8 bg-[#1F3A5A]/50 backdrop-blur-md rounded-2xl shadow-lg border border-blue-800/50">
                 <header className="text-center mb-8">
-                    <h1 className="text-4xl font-extrabold text-white">Enrollment Login</h1>
+                    <h1 className="text-4xl font-extrabold text-white">Admin Login</h1>
                     <p className="text-gray-400 mt-2">Access the enrollments dashboard.</p>
                 </header>
                 <form onSubmit={handleLogin} className="space-y-6">
@@ -78,7 +79,7 @@ const LoginForm = ({ onLoginSuccess }) => {
 };
 
 // Enrollments Display Component
-const EnrollmentsDisplay = () => {
+const EnrollmentsDisplay = ({ onLogout }) => {
     const [enrollments, setEnrollments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -108,7 +109,6 @@ const EnrollmentsDisplay = () => {
     };
     
     const handleDownload = () => {
-        // (Download logic yahan hai)
         if (enrollments.length === 0) {
             alert("No data to download.");
             return;
@@ -137,8 +137,11 @@ const EnrollmentsDisplay = () => {
             <div className="container mx-auto">
                 <header className="mb-8 text-center">
                     <h1 className="text-4xl sm:text-5xl font-extrabold text-white">Enrollment <span className="text-yellow-400">Submissions</span></h1>
-                    <p className="text-gray-400 mt-2 text-lg">List of all users who have enrolled for the workshop.</p>
-                    <button onClick={handleDownload} className="mt-6 bg-yellow-400 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 transition-all duration-300 shadow-md flex items-center gap-2 mx-auto"><Download size={20} /> Download Data (CSV)</button>
+                    <p className="text-gray-400 mt-2 text-lg">List of all users who have enrolled for the database.</p>
+                    <div className="flex justify-center gap-4 mt-6">
+                        <button onClick={handleDownload} className="bg-yellow-400 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 transition-all duration-300 shadow-md flex items-center gap-2"><Download size={20} /> Download Data (CSV)</button>
+                        <button onClick={onLogout} className="bg-red-600 text-white font-bold py-2 px-6 rounded-full hover:bg-red-700 transition-all duration-300 shadow-md flex items-center gap-2"><LogOut size={20} /> Logout</button>
+                    </div>
                 </header>
                 {error && <div className="bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg relative mb-6 text-center"><Info className="inline w-5 h-5 mr-2"/> {error}</div>}
                 {enrollments.length === 0 ? <div className="text-center py-16 bg-[#1F3A5A]/50 rounded-lg"><Info className="w-12 h-12 text-yellow-400 mx-auto mb-4"/><p className="text-gray-400 text-lg">No enrollments found.</p></div> : (
@@ -194,10 +197,23 @@ const EnrollmentsDisplay = () => {
 export default function AdminEnrollmentsPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    // Page load hone par check karein ki user pehle se logged in hai ya nahi
+    useEffect(() => {
+        const loggedIn = localStorage.getItem('isAdminAuthenticated');
+        if (loggedIn === 'true') {
+            setIsAuthenticated(true);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('isAdminAuthenticated');
+        setIsAuthenticated(false);
+    };
+
     if (!isAuthenticated) {
         return <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />;
     }
 
-    return <EnrollmentsDisplay />;
+    return <EnrollmentsDisplay onLogout={handleLogout} />;
 }
 
