@@ -10,7 +10,9 @@ export default function Navbar() {
 
   // Scroll background change
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -69,32 +71,20 @@ export default function Navbar() {
             </Link>
 
             {user ? (
-              <>
-                {user.role === "user" && (
-                  <Link
-                    to="/profile"
-                    className="bg-yellow-400 text-gray-900 font-semibold py-2 px-5 rounded-full hover:bg-yellow-300 transition-all duration-300"
-                  >
-                    {user.name || "Profile"}
-                  </Link>
-                )}
-
-                {user.role === "admin" && (
-                  <Link
-                    to="/admin"
-                    className="bg-red-500 text-white font-semibold py-2 px-5 rounded-full hover:bg-red-600 transition-all duration-300"
-                  >
-                    Admin Dashboard
-                  </Link>
-                )}
-
+              <div className="flex items-center space-x-4">
+                <Link
+                  to="/profile"
+                  className="bg-yellow-400 text-gray-900 font-semibold py-2 px-5 rounded-full hover:bg-yellow-300 transition-all duration-300"
+                >
+                  {user.name || "Profile"}
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="text-white border border-yellow-400 py-2 px-5 rounded-full hover:bg-yellow-400 hover:text-gray-900 transition-all duration-300"
                 >
                   Logout
                 </button>
-              </>
+              </div>
             ) : (
               <Link
                 to="/login"
@@ -136,24 +126,13 @@ export default function Navbar() {
 
           {user ? (
             <>
-              {user.role === "user" && (
-                <Link
-                  to="/profile"
-                  onClick={closeMenu}
-                  className="bg-yellow-400 text-gray-900 font-semibold py-2 px-6 rounded-full hover:bg-yellow-300 transition-all duration-300"
-                >
-                  {user.name || "Profile"}
-                </Link>
-              )}
-              {user.role === "admin" && (
-                <Link
-                  to="/admin"
-                  onClick={closeMenu}
-                  className="bg-red-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-red-600 transition-all duration-300"
-                >
-                  Admin Dashboard
-                </Link>
-              )}
+              <Link
+                to="/profile"
+                onClick={closeMenu}
+                className="bg-yellow-400 text-gray-900 font-semibold py-2 px-6 rounded-full hover:bg-yellow-300 transition-all duration-300"
+              >
+                {user.name || "Profile"}
+              </Link>
               <button
                 onClick={() => {
                   handleLogout();
