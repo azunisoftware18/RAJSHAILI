@@ -3,6 +3,56 @@ import { Link, HashRouter } from "react-router-dom";
 import { User, Mail, Phone, MapPin, X, Loader2, Link as LinkIcon } from 'lucide-react';
 import axios from "axios";
 
+// Naya InteractiveCard Component (hover image fix)
+// Naya InteractiveCard Component (hover image fix - FINAL)
+const InteractiveCard = ({ coverImage, titleImage, characterImage }) => {
+  return (
+    <div
+      className="group relative flex h-96 w-72 cursor-pointer items-end justify-center p-6
+                 sm:h-[450px] sm:w-[350px] [perspective:2500px]"
+    >
+      {/* Cover Image (Base Layer) */}
+      <div
+        className="absolute inset-0 rounded-2xl overflow-hidden transition-all duration-500
+                   group-hover:shadow-[2px_35px_32px_-8px_rgba(0,0,0,0.75)]
+                   group-hover:[transform:perspective(900px)_translateY(-5%)_rotateX(25deg)]
+                   
+                   before:absolute before:left-0 before:top-0 before:h-full before:w-full
+                   before:bg-[linear-gradient(to_top,transparent_46%,rgba(12,13,19,0.5)_68%,rgba(12,13,19)_97%)]
+                   before:opacity-0 before:transition-all before:duration-500 group-hover:before:opacity-100
+
+                   after:absolute after:bottom-0 after:left-0 after:h-20 after:w-full
+                   after:bg-[linear-gradient(to_bottom,transparent_46%,rgba(12,13,19,0.5)_68%,rgba(12,13,19)_97%)]
+                   after:opacity-100 after:transition-all after:duration-500 group-hover:after:h-32"
+      >
+        <img
+          src={coverImage}
+          alt="Cover"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </div>
+
+      {/* Character Image (Hover par visible hoga) */}
+      <img
+        src={characterImage}
+        alt="Character"
+        className="absolute inset-0 w-full h-full object-contain z-50 opacity-0 scale-90 
+                   transition-all duration-700 ease-out 
+                   group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-[-40px]"
+      />
+
+      {/* Title Image (Top Layer) */}
+      <img
+        src={titleImage}
+        alt="Title"
+        className="relative z-30 w-full transition-transform duration-500 ease-out 
+                   group-hover:translate-y-[-60px]"
+      />
+    </div>
+  );
+};
+
+
 // Custom CSS animations ke liye style tag
 const CustomStyles = () => (
   <style>{`
@@ -197,23 +247,17 @@ export default function HeroSection() {
             </div>
 
             {/* Right Images */}
-            <div className="w-full md:w-7/12 flex flex-row items-start justify-center gap-2 md:gap-4 opacity-0 animate-fadeIn delay-400 mt-10 md:mt-0 px-2">
-                <Link to="/about#about-shalini" className="relative group text-center w-1/2">
-                    <img src="/hero-img/hero.png" alt="Shalini Salecha" className="object-contain w-full duration-300 group-hover:scale-105 transition-transform md:pt-31"/>
-                    <div className="absolute bottom-2 left-0 right-0 px-1">
-                        <span className="text-white text-xs sm:text-base md:text-xl font-bold tracking-tight group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_50%)]">
-                            Acharya Shalini Salecha
-                        </span>
-                    </div>
-                </Link>
-                <Link to="/about#about-dr-tailor" className="relative group text-center w-1/2">
-                    <img src="/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png" alt="Dr. R. K. Tailor" className="object-contain w-full duration-300 group-hover:scale-105 transition-transform md:pt-31" />
-                    <div className="absolute bottom-2 left-0 right-0 px-1">
-                        <span className="text-white text-xs sm:text-base md:text-xl font-bold tracking-tight group-hover:text-yellow-400 transition-colors drop-shadow-lg [text-shadow:_0_2px_2px_rgb(0_0_0_/_50%)]">
-                            Dr. R. K. Tailor
-                        </span>
-                    </div>
-                </Link>
+                <div className="w-full lg:w-1/2 flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 animate-fadeIn delay-400 mt-10 lg:mt-0">
+                <InteractiveCard
+                    coverImage="/hero-img/hero.png"
+                    titleImage="/hero-img/name2.png"
+                    characterImage="/hero-img/hero.png" 
+                />
+                <InteractiveCard
+                    coverImage="/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png"
+                    titleImage="/hero-img/name1.png"
+                    characterImage="/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png"
+                />
             </div>
         </div>
 

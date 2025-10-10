@@ -6,17 +6,22 @@ import SidebarNav from "../Pages/admin/SidebarNav";
 
 export default function AdminLayouts() {
   return (
-    <div>
-      <div className=" md:flex md:w-full">
-        <SidebarNav />
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <SidebarNav />
 
-        <div className="md:w-full">
-          <AdminNavbar />
-          <div className="md:w-full">
-            <Outlet />
-            <DashboardFooter/>
-          </div>
-        </div>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Navbar */}
+        <AdminNavbar />
+
+        {/* Page Content */}
+        <main className="flex-1 p-4 md:p-6 bg-gray-100 overflow-auto">
+          <Outlet />
+        </main>
+
+        {/* Footer */}
+        <DashboardFooter />
       </div>
     </div>
   );
