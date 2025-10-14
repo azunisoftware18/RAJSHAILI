@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
@@ -7,12 +7,22 @@ export default function Profile() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+
     if (!storedUser) {
-      // agar login nahi hua hai to redirect to login
+      // User logged out, redirect to login
       navigate("/login");
-    } else {
-      setUser(JSON.parse(storedUser));
+      return;
     }
+
+    const parsedUser = JSON.parse(storedUser);
+
+    if (parsedUser.role === "admin") {
+      // Admin should not access user profile, redirect to admin dashboard
+      navigate("/admin");
+      return;
+    }
+
+    setUser(parsedUser);
   }, [navigate]);
 
   const handleLogout = () => {
@@ -21,7 +31,7 @@ export default function Profile() {
     navigate("/login");
   };
 
-  if (!user) return null; // jab tak data load ho raha hai
+  if (!user) return null; // Data loading
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
