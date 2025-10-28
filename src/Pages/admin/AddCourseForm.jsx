@@ -1,434 +1,298 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Plus, Edit, Trash2, Loader2, BookOpen, Image as ImageIcon } from "lucide-react";
 
-export default function AddCourseForm() {
-  const [images, setImages] = useState([]);
-  const [courseName, setCourseName] = useState("");
-  const [courseTagline, setCourseTagline] = useState("");
-  const [coursePrice, setCoursePrice] = useState("");
-  const [courseDiscount, setCourseDiscount] = useState("");
-  const [courseDescription, setCourseDescription] = useState("");
-  const [editIndex, setEditIndex] = useState(null);
-  const [viewCourse, setViewCourse] = useState(null);
-  const [courseList, setCourseList] = useState([]);
-  const [errors, setErrors] = useState({});
-  const [showForm, setShowForm] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const inputImageURL = useRef();
-
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
-    const newImages = files.map((file) => ({
-      file,
-      url: URL.createObjectURL(file),
-    }));
-    setImages(newImages);
-  };
-
-  const validateForm = () => {
-    let newErrors = {};
-    if (!courseName || courseName.length < 3) {
-      newErrors.courseName = "Course name must be at least 3 characters.";
-    }
-    if (!courseTagline) {
-      newErrors.courseTagline = "Tagline is required.";
-    }
-    if (!coursePrice || coursePrice <= 0) {
-      newErrors.coursePrice = "Price must be greater than 0.";
-    }
-    if (courseDiscount < 0 || courseDiscount > 100) {
-      newErrors.courseDiscount = "Discount must be between 0 and 100.";
-    }
-    if (editIndex === null && images.length === 0) {
-      newErrors.images = "At least one image is required.";
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    const newCourse = {
-      images: images.length > 0 ? images : courseList[editIndex]?.images,
-      courseName,
-      courseTagline,
-      coursePrice,
-      courseDiscount,
-      courseDescription: courseDescription
-        .split("\n")
-        .filter((line) => line.trim() !== ""),
-    };
-
-    if (editIndex !== null) {
-      const updatedList = [...courseList];
-      updatedList[editIndex] = newCourse;
-      setCourseList(updatedList);
-    } else {
-      setCourseList([...courseList, newCourse]);
-    }
-
-    // Reset form fields
-    setCourseName("");
-    setCourseTagline("");
-    setCoursePrice("");
-    setCourseDiscount("");
-    setCourseDescription("");
-    setImages([]);
-    if (inputImageURL.current) inputImageURL.current.value = "";
-    setErrors({});
-    setShowForm(false);
-    setEditIndex(null);
-  };
-
-  const handleEdit = (course, index) => {
-    setEditIndex(index);
-    setCourseName(course.courseName);
-    setCourseTagline(course.courseTagline);
-    setCoursePrice(course.coursePrice);
-    setCourseDiscount(course.courseDiscount);
-    setCourseDescription(course.courseDescription.join("\n"));
-    setImages(course.images || []); // Ensure images is an array
-    setShowForm(true);
-  };
-
-  const handleDelete = (index) => {
-    if(window.confirm("Are you sure you want to delete this course?")) {
-        const filteredList = courseList.filter((_, i) => i !== index);
-        setCourseList(filteredList);
-    }
-  };
-  
-  const resetForm = () => {
-      setCourseName("");
-      setCourseTagline("");
-      setCoursePrice("");
-      setCourseDiscount("");
-      setCourseDescription("");
-      setImages([]);
-      if (inputImageURL.current) inputImageURL.current.value = "";
-      setErrors({});
-      setShowForm(false);
-      setEditIndex(null);
-  }
-  
-  const handleViewCourse = (course) => {
-    setViewCourse(course);
-    if (course.images && course.images.length > 0) {
-        setSelectedImage(course.images[0].url);
-    }
-  }
-
-  const calculateFinalPrice = (price, discount) => {
-      if(!price || !discount) return price;
-      return (price - (price * discount / 100)).toFixed(2);
-  }
-
+// Delete Confirmation Modal
+const ConfirmationModal = ({ isOpen, courseName, onConfirm, onCancel }) => {
+  if (!isOpen) return null;
   return (
-    <div className="container mx-auto p-4 md:p-6 bg-gray-50 min-h-screen">
-      {/* Add Course Button */}
-      {!showForm && (
-        <div className="text-right mb-6">
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+      <div className="bg-white p-7 rounded-2xl shadow-2xl max-w-sm w-full relative">
+        <h3 className="text-xl font-bold text-red-600 mb-4 border-b border-gray-200 pb-2">
+          Confirm Deletion
+        </h3>
+        <p className="text-gray-700 mb-6">
+          Are you sure you want to delete the course:{" "}
+          <span className="font-semibold text-gray-900">"{courseName}"</span>? This action cannot be undone.
+        </p>
+        <div className="flex justify-end gap-3">
           <button
-            className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 shadow-md transition-all"
-            onClick={() => {
-                setShowForm(true);
-                setEditIndex(null);
-            }}
+            onClick={onCancel}
+            className="bg-gray-300 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-400 transition"
           >
-            + Add New Course
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition"
+          >
+            Delete
           </button>
         </div>
-      )}
+      </div>
+    </div>
+  );
+};
 
-      {/* Form */}
-      {showForm && (
-        <div className="bg-white shadow-xl p-6 rounded-lg mb-8">
-          <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-            {editIndex !== null ? "Edit Course Details" : "Add a New Course"}
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block font-semibold text-gray-700">Course Name</label>
-              <input
-                type="text"
-                className={`w-full border p-2 rounded mt-1 ${
-                  errors.courseName ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="e.g., Advanced Vedic Astrology"
-                value={courseName}
-                onChange={(e) => setCourseName(e.target.value)}
-              />
-              {errors.courseName && (
-                <p className="text-red-500 text-sm mt-1">{errors.courseName}</p>
-              )}
-            </div>
+export default function CourseManager() {
+  const [courses, setCourses] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    tagline: "",
+    price: "",
+    discount: "",
+    description: "",
+    image: null,
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [deleteCourse, setDeleteCourse] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
-            <div>
-              <label className="block font-semibold text-gray-700">Tagline</label>
-              <input
-                type="text"
-                className="w-full border p-2 rounded mt-1"
-                placeholder="A short, catchy tagline for the course"
-                value={courseTagline}
-                onChange={(e) => setCourseTagline(e.target.value)}
-              />
-            </div>
+  const API = "http://localhost:3000/api";
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  // Fetch courses
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${API}/courses`);
+      setCourses(res.data);
+    } catch (err) {
+      console.error(err);
+      setMessage("❌ Failed to fetch courses.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const resetForm = () => {
+    setFormData({ name: "", tagline: "", price: "", discount: "", description: "", image: null });
+    const fileInput = document.getElementById("file-input");
+    if (fileInput) fileInput.value = "";
+    setIsEditing(false);
+    setEditId(null);
+    setMessage("");
+    setIsFormVisible(false);
+  };
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: files ? files[0] : value }));
+  };
+
+  const handleEdit = (course) => {
+    setEditId(course.id);
+    setIsEditing(true);
+    setFormData({
+      name: course.name,
+      tagline: course.tagline,
+      price: String(course.price),
+      discount: String(course.discount),
+      description: course.description,
+      image: null,
+    });
+    setMessage(`Editing Course: ${course.name}`);
+    setIsFormVisible(true);
+    const formElement = document.getElementById("course-form");
+    if (formElement) formElement.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
+    if (!formData.name || !formData.tagline || !formData.price || (!isEditing && !formData.image)) {
+      setMessage("❌ Please fill all required fields and select an image.");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.discount < 0 || formData.discount > 100) {
+      setMessage("❌ Discount must be between 0 and 100.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value) data.append(key, value);
+      });
+
+      if (isEditing) {
+        await axios.put(`${API}/courses/${editId}`, data, { headers: { "Content-Type": "multipart/form-data" } });
+        setMessage(`✅ Course "${formData.name}" updated successfully!`);
+      } else {
+        await axios.post(`${API}/courses`, data, { headers: { "Content-Type": "multipart/form-data" } });
+        setMessage("✅ Course uploaded successfully!");
+      }
+
+      resetForm();
+      fetchCourses();
+    } catch (error) {
+      console.error(error);
+      setMessage("❌ Failed to process course. Check server connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAttempt = (course) => {
+    setDeleteCourse(course);
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteCourse) return;
+    setIsConfirmModalOpen(false);
+    setLoading(true);
+    setMessage("");
+
+    try {
+      await axios.delete(`${API}/courses/${deleteCourse.id}`);
+      setMessage(`🗑️ Course "${deleteCourse.name}" deleted successfully!`);
+      fetchCourses();
+    } catch (error) {
+      console.error(error);
+      setMessage("❌ Failed to delete course.");
+    } finally {
+      setLoading(false);
+      setDeleteCourse(null);
+    }
+  };
+
+  const calculateFinalPrice = (price, discount) => (price * (1 - discount / 100)).toFixed(0);
+
+  return (
+    <div className="min-h-screen bg-gray-50 text-gray-800 p-4 sm:p-8 font-sans">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-10 pt-4 border-b-4 border-blue-500/10 pb-4">
+          <h1 className="text-4xl font-extrabold text-blue-700 flex items-center justify-center gap-3">
+            <BookOpen size={36} className="text-blue-500" /> Course Management
+          </h1>
+          <p className="text-gray-500 mt-2">Add, edit, and manage your online course listings.</p>
+        </div>
+
+        {/* Add Button */}
+        <div className="mb-8 flex justify-end">
+          <button
+            type="button"
+            onClick={() => { resetForm(); setIsFormVisible(true); setIsEditing(false); }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold transition-all duration-300 shadow-md flex items-center space-x-2"
+          >
+            <Plus size={20} /> <span>Add New Course</span>
+          </button>
+        </div>
+
+        {/* Form */}
+        {isFormVisible && (
+          <form onSubmit={handleSubmit} id="course-form" className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border-t-4 border-blue-600 mb-10">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2 border-b pb-3 border-gray-100">
+              {isEditing ? <Edit size={24} className="text-green-600" /> : <Plus size={24} className="text-blue-600" />}
+              {isEditing ? "Edit Course Details" : "Add New Course"}
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block font-semibold text-gray-700">Price (₹)</label>
-                <input
-                  type="number"
-                  className="w-full border p-2 rounded mt-1"
-                  placeholder="e.g., 4999"
-                  value={coursePrice}
-                  onChange={(e) => setCoursePrice(e.target.value)}
-                />
-                 {errors.coursePrice && (
-                    <p className="text-red-500 text-sm mt-1">{errors.coursePrice}</p>
-                 )}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Course Name</label>
+                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Course Name" className="w-full p-3 rounded-xl bg-gray-50 border border-gray-300" required />
               </div>
               <div>
-                <label className="block font-semibold text-gray-700">Discount (%)</label>
-                <input
-                  type="number"
-                  className="w-full border p-2 rounded mt-1"
-                  placeholder="e.g., 20"
-                  value={courseDiscount}
-                  onChange={(e) => setCourseDiscount(e.target.value)}
-                />
-                 {errors.courseDiscount && (
-                    <p className="text-red-500 text-sm mt-1">{errors.courseDiscount}</p>
-                 )}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tagline</label>
+                <input type="text" name="tagline" value={formData.tagline} onChange={handleChange} placeholder="Tagline" className="w-full p-3 rounded-xl bg-gray-50 border border-gray-300" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Original Price (₹)</label>
+                <input type="number" name="price" value={formData.price} onChange={handleChange} className="w-full p-3 rounded-xl bg-gray-50 border border-gray-300" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Discount (%)</label>
+                <input type="number" name="discount" value={formData.discount} onChange={handleChange} min="0" max="100" className="w-full p-3 rounded-xl bg-gray-50 border border-gray-300" required />
               </div>
             </div>
 
-            <div>
-              <label className="block font-semibold text-gray-700">Description (add points in new lines)</label>
-              <textarea
-                className="w-full border p-2 rounded mt-1"
-                rows="4"
-                placeholder="Enter key features of the course..."
-                value={courseDescription}
-                onChange={(e) => setCourseDescription(e.target.value)}
-              />
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea name="description" value={formData.description} onChange={handleChange} rows="4" className="w-full p-3 rounded-xl bg-gray-50 border border-gray-300"></textarea>
             </div>
 
-            <div>
-              <label className="block font-semibold text-gray-700">Upload Images</label>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                ref={inputImageURL}
-                onChange={handleImageChange}
-                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              />
-              {errors.images && (
-                <p className="text-red-500 text-sm mt-1">{errors.images}</p>
-              )}
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                <ImageIcon size={18} className="text-blue-500" /> Course Thumbnail Image
+              </label>
+              <input type="file" name="image" id="file-input" accept="image/*" onChange={handleChange} className="block w-full file:py-2 file:px-4 file:rounded-xl file:bg-blue-100 file:text-blue-700 cursor-pointer" required={!isEditing} />
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                type="button"
-                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-                onClick={resetForm}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                {editIndex !== null ? "Save Changes" : "Add Course"}
+            <div className="flex justify-end pt-6 border-t border-gray-100 mt-6">
+              <button type="submit" disabled={loading} className={` ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} text-white px-8 py-3 rounded-xl font-bold text-lg transition-all`}>
+                {loading ? (<><Loader2 size={20} className="animate-spin" /> Processing...</>) : (isEditing ? "Save Changes" : "Upload Course")}
               </button>
             </div>
+
+            {message && <p className={`mt-4 text-center text-sm font-semibold p-3 rounded-xl ${message.startsWith('✅') || message.startsWith('🗑️') ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>{message}</p>}
           </form>
-        </div>
-      )}
-      
-      {/* Course List Section */}
-      <h3 className="text-2xl font-bold mb-4 text-gray-800">Course List</h3>
-      {courseList.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">No courses have been added yet.</p>
-      ) : (
-        <>
-        {/* Table View for Medium Screens and Up */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-300 text-left">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="border p-3">Image</th>
-                <th className="border p-3">Name</th>
-                <th className="border p-3">Price Details</th>
-                <th className="border p-3">Description</th>
-                <th className="border p-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courseList.map((course, index) => (
-                <tr key={index} className="bg-white hover:bg-gray-50">
-                  <td className="border p-2">
-                    {course.images[0] && (
-                      <img
-                        src={course.images[0].url}
-                        alt="Course"
-                        className="h-16 w-16 object-cover rounded-md"
-                      />
-                    )}
-                  </td>
-                  <td className="border p-3">
-                    <p className="font-bold">{course.courseName}</p>
-                    <p className="text-sm text-gray-600">{course.courseTagline}</p>
-                  </td>
-                  <td className="border p-3">
-                    <p className="font-bold text-lg">₹{calculateFinalPrice(course.coursePrice, course.courseDiscount)}</p>
-                    <p className="text-sm text-green-600">{course.courseDiscount}% off</p>
-                  </td>
-                  <td className="border p-3 text-sm text-gray-700">
-                    {course.courseDescription[0]}...
-                  </td>
-                  <td className="border p-3">
-                    <div className="flex justify-center gap-2">
-                        <button
-                          className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                          onClick={() => handleEdit(course, index)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                          onClick={() => handleDelete(index)}
-                        >
-                          Delete
-                        </button>
-                        <button
-                          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                          onClick={() => handleViewCourse(course)}
-                        >
-                          View
-                        </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Card View for Small Screens */}
-        <div className="block md:hidden space-y-4">
-            {courseList.map((course, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-lg p-4 flex space-x-4">
-                    <div className="flex-shrink-0">
-                        {course.images[0] && (
-                           <img
-                                src={course.images[0].url}
-                                alt="Course"
-                                className="h-24 w-24 object-cover rounded-md"
-                            />
-                        )}
-                    </div>
-                    <div className="flex-1">
-                        <h4 className="font-bold text-lg">{course.courseName}</h4>
-                        <p className="text-sm text-gray-600">{course.courseTagline}</p>
-                        <div className="flex items-center space-x-2 my-1">
-                            <p className="text-md font-semibold text-black">₹{calculateFinalPrice(course.coursePrice, course.courseDiscount)}</p>
-                            <p className="text-sm text-gray-500 line-through">₹{course.coursePrice}</p>
-                            <p className="text-sm text-green-600">{course.courseDiscount}% off</p>
-                        </div>
-                        <p className="text-xs text-gray-500 mb-2">{course.courseDescription[0]}...</p>
-                        <div className="flex justify-end gap-2">
-                             <button
-                                className="bg-green-500 text-white px-2 py-1 text-sm rounded hover:bg-green-600"
-                                onClick={() => handleEdit(course, index)}
-                            >
-                                Edit
-                            </button>
-                            <button
-                                className="bg-red-500 text-white px-2 py-1 text-sm rounded hover:bg-red-600"
-                                onClick={() => handleDelete(index)}
-                            >
-                                Delete
-                            </button>
-                            <button
-                                className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
-                                onClick={() => handleViewCourse(course)}
-                            >
-                                View
-                            </button>
-                        </div>
-                    </div>
+        )}
+
+        {/* Courses List */}
+        <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-800 border-b border-gray-300 pb-3">📚 All Courses ({courses.length})</h2>
+
+        {courses.length === 0 ? (
+          <p className="text-gray-500 text-center py-10 text-lg">No courses found.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {courses.map(course => (
+              <div key={course.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition">
+                {/* Image */}
+                <div className="relative w-full h-40 overflow-hidden rounded-t-xl">
+                  <img
+                    src={course.imageUrl.startsWith("http") ? course.imageUrl : `http://localhost:3000${course.imageUrl}`}
+                    alt={course.name}
+                    className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://placehold.co/600x400/E5E7EB/4B5563?text=Course+Image";
+                    }}
+                  />
+                  <div className="absolute top-3 right-3 flex gap-2">
+                    <button onClick={() => handleEdit(course)} className="bg-yellow-400 hover:bg-yellow-500 p-1.5 rounded-full transition">
+                      <Edit size={16} className="text-white" />
+                    </button>
+                    <button onClick={() => handleDeleteAttempt(course)} className="bg-red-500 hover:bg-red-600 p-1.5 rounded-full transition">
+                      <Trash2 size={16} className="text-white" />
+                    </button>
+                  </div>
                 </div>
+
+                {/* Content */}
+                <div className="p-4">
+                  <h3 className="font-bold text-lg text-gray-800">{course.name}</h3>
+                  <p className="text-gray-500 text-sm">{course.tagline}</p>
+                  <p className="mt-2 font-semibold text-gray-900">
+                    ₹{calculateFinalPrice(course.price, course.discount)}{" "}
+                    <span className="line-through text-gray-400 text-sm">₹{course.price}</span>
+                  </p>
+                </div>
+              </div>
             ))}
-        </div>
-        </>
-      )}
-
-      {/* View Card Modal */}
-      {viewCourse && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full relative">
-            <h3 className="text-xl font-bold mb-4 border-b pb-2">Course Details :-</h3>
-            <div className="flex flex-col md:flex-row gap-6">
-                {/* Left Side: Images */}
-                <div className="w-full md:w-1/2">
-                    <div className="main-image mb-2">
-                        <img src={selectedImage || viewCourse.images[0]?.url} alt="Course" className="w-full h-64 object-cover rounded-lg shadow-md"/>
-                    </div>
-                    <div className="thumbnails flex gap-2">
-                        {viewCourse.images.map((img, i) => (
-                             <img
-                                key={i}
-                                src={img.url}
-                                alt={`Thumbnail ${i}`}
-                                className={`h-16 w-16 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img.url ? 'border-blue-500' : 'border-transparent'}`}
-                                onClick={() => setSelectedImage(img.url)}
-                            />
-                        ))}
-    
-                    </div>
-                </div>
-                {/* Right Side: Details */}
-                <div className="w-full md:w-1/2">
-                    <h2 className="text-2xl font-bold text-gray-800">{viewCourse.courseName}</h2>
-                    <p className="text-gray-600 mb-3">{viewCourse.courseTagline}</p>
-                    <div className="flex items-center gap-3 mb-4">
-                        <p className="text-2xl font-bold text-purple-700">₹{calculateFinalPrice(viewCourse.coursePrice, viewCourse.courseDiscount)}</p>
-                        <p className="text-md text-gray-400 line-through">₹{viewCourse.coursePrice}</p>
-                        <p className="text-md font-semibold text-green-600">{viewCourse.courseDiscount}% off</p>
-                    </div>
-                     <div className="flex gap-3 mb-4">
-                        <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Enroll Now</button>
-                        <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300">Add to Wishlist</button>
-                    </div>
-
-                    <div>
-                        <h4 className="font-semibold text-gray-800 mb-1">Description:</h4>
-                        <div className="max-h-32 overflow-y-auto text-gray-700 pr-2">
-                            <ul className="list-disc list-inside space-y-1">
-                                {viewCourse.courseDescription.map((desc, i) => (
-                                <li key={i}>{desc}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-             <button
-              className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-              onClick={() => setViewCourse(null)}
-            >
-              Close
-            </button>
           </div>
-        </div>
-      )}
+        )}
+
+        <ConfirmationModal
+          isOpen={isConfirmModalOpen}
+          courseName={deleteCourse?.name}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setIsConfirmModalOpen(false)}
+        />
+      </div>
     </div>
   );
 }
-

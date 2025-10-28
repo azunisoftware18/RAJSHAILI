@@ -1,278 +1,502 @@
-import React, { useState, useEffect } from "react";
-import { Link, HashRouter } from "react-router-dom"; 
-import { User, Mail, Phone, MapPin, X, Loader2, Link as LinkIcon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+// import { Link } from "react-router-dom"; // Link component is not used
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  X,
+  Loader2,
+  Link as LinkIcon,
+  PlayCircle,
+  AlertCircle // Added for error display
+} from "lucide-react";
 import axios from "axios";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+// import { Typewriter } from "react-simple-typewriter"; // Removed library
 
-// Naya InteractiveCard Component (hover image fix)
-// Naya InteractiveCard Component (hover image fix - FINAL)
-const InteractiveCard = ({ coverImage, titleImage, characterImage }) => {
+// --- API and Image Base URLs ---
+const API_BASE_URL = "http://localhost:3000/api/home";
+const IMAGE_BASE_URL = "http://localhost:3000/"; 
+
+// 🌈 Custom Animations (CSS)
+const CustomStyles = () => (
+  <style>{`
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modal-scale-up {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+    .animate-modal-scale-up { animation: modal-scale-up 0.4s cubic-bezier(0.165,0.84,0.44,1) forwards; }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    .floating-orb { animation: float 6s ease-in-out infinite; }
+    
+    /* Shine animation for Glass Card Text */
+    .shine {
+      background: linear-gradient(90deg, #7f00ff, #e100ff, #00c6ff, #0072ff);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 6s linear infinite;
+    }
+    @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+  `}</style>
+);
+
+// --- Custom Typewriter Component (Speed Slowed Down) ---
+const CustomTypewriter = () => {
+    const words = [
+        "Institute of Divine Knowledge",
+        "School of Vedic Wisdom",
+        "Journey to Self Discovery",
+    ];
+    const [wordIndex, setWordIndex] = useState(0);
+    const [displayedText, setDisplayedText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const typeSpeed = 220; // Slowed down typing
+        const deleteSpeed = 120; // Slowed down deleting
+        const delaySpeed = 2000;
+        let currentTimeout;
+
+        const handleTyping = () => {
+            const currentWord = words[wordIndex];
+            let newText;
+            let speed;
+
+            if (isDeleting) {
+                newText = currentWord.substring(0, displayedText.length - 1);
+                speed = deleteSpeed;
+            } else {
+                newText = currentWord.substring(0, displayedText.length + 1);
+                speed = typeSpeed;
+            }
+            
+            setDisplayedText(newText);
+
+            if (!isDeleting && newText === currentWord) {
+                speed = delaySpeed;
+                setIsDeleting(true);
+            } else if (isDeleting && newText === "") {
+                setIsDeleting(false);
+                setWordIndex((prev) => (prev + 1) % words.length);
+                speed = typeSpeed;
+            }
+            
+            currentTimeout = setTimeout(handleTyping, speed);
+        };
+
+        currentTimeout = setTimeout(handleTyping, typeSpeed); // Start the loop
+
+        return () => clearTimeout(currentTimeout);
+    }, [displayedText, isDeleting, wordIndex]);
+
+    return (
+        // Gradient text for dark background
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+            {displayedText}
+            <motion.span
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="ml-1 text-purple-400" // Cursor color
+            >
+                |
+            </motion.span>
+        </span>
+    );
+};
+// --- End of CustomTypewriter ---
+
+
+// 🌟 Registration Modal (No changes)
+const RegistrationModal = ({ onClose }) => {
+  const [formData, setFormData] = useState({ name: "", email: "", number: "", address: "" });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required.";
+    if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Valid email required.";
+    if (!/^\d{10}$/.test(formData.number)) newErrors.number = "10-digit phone required.";
+    if (!formData.address.trim()) newErrors.address = "Address required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) =>
+    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    setIsSubmitting(true);
+    try {
+      await axios.post("https://api.raj-shaili.com/api/enrollment-create", formData);
+      setIsSuccess(true);
+    } catch (err) {
+      alert("Error submitting form. Try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div
-      className="group relative flex h-96 w-72 cursor-pointer items-end justify-center p-6
-                 sm:h-[450px] sm:w-[350px] [perspective:2500px]"
+      className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn"
+      onClick={onClose}
     >
-      {/* Cover Image (Base Layer) */}
       <div
-        className="absolute inset-0 rounded-2xl overflow-hidden transition-all duration-500
-                   group-hover:shadow-[2px_35px_32px_-8px_rgba(0,0,0,0.75)]
-                   group-hover:[transform:perspective(900px)_translateY(-5%)_rotateX(25deg)]
-                   
-                   before:absolute before:left-0 before:top-0 before:h-full before:w-full
-                   before:bg-[linear-gradient(to_top,transparent_46%,rgba(12,13,19,0.5)_68%,rgba(12,13,19)_97%)]
-                   before:opacity-0 before:transition-all before:duration-500 group-hover:before:opacity-100
-
-                   after:absolute after:bottom-0 after:left-0 after:h-20 after:w-full
-                   after:bg-[linear-gradient(to_bottom,transparent_46%,rgba(12,13,19,0.5)_68%,rgba(12,13,19)_97%)]
-                   after:opacity-100 after:transition-all after:duration-500 group-hover:after:h-32"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col md:flex-row overflow-hidden animate-modal-scale-up"
+        onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={coverImage}
-          alt="Cover"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        <div className="hidden md:flex w-full md:w-2/5 bg-slate-900 p-8 flex-col justify-center items-center relative overflow-hidden">
+          <div className="absolute -top-16 -left-16 w-48 h-48 bg-purple-500 rounded-full opacity-30 blur-2xl floating-orb" /> 
+          <div
+            className="absolute -bottom-24 -right-10 w-64 h-64 bg-cyan-400 rounded-full opacity-30 blur-3xl floating-orb"
+            style={{ animationDelay: "2s" }}
+          />
+          <h2 className="text-3xl font-bold text-white mb-4 z-10">RAJSHAILI</h2>
+          <p className="text-slate-400 text-center mb-8 z-10">
+            Unlock your destiny — begin your journey today.
+          </p>
+          <img
+            src="hero-img/46992-removebg-preview.png"
+            alt="Astrology"
+            className="w-64 h-64 object-contain z-10"
+          />
+        </div>
+
+        <div className="w-full md:w-3/5 p-8 relative">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
+          >
+            <X size={24} />
+          </button>
+
+          {isSuccess ? (
+            <div className="text-center flex flex-col justify-center h-full min-h-[300px]">
+              <h2 className="text-3xl font-bold mb-4 text-emerald-600">
+                Registration Successful!
+              </h2>
+              <p className="text-gray-600 mb-8">
+                Thank you! You can now join the meeting.
+              </p>
+              <a
+                href="https://meet.google.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg hover:shadow-lg hover:shadow-emerald-500/40 flex items-center justify-center gap-2"
+              >
+                <LinkIcon size={20} /> Join Google Meet
+              </a>
+            </div>
+          ) : (
+            <>
+              <h2 className="text-3xl font-bold mb-2 text-slate-800">Enroll Now</h2>
+              <p className="text-gray-500 mb-6">
+                Enter your information to begin your journey.
+              </p>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {["name", "email", "number", "address"].map((f) => (
+                  <div key={f}>
+                    <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            {f === 'name' && <User size={18} />}
+                            {f === 'email' && <Mail size={18} />}
+                            {f === 'number' && <Phone size={18} />}
+                            {f === 'address' && <MapPin size={18} />}
+                        </span>
+                        <input
+                          name={f}
+                          placeholder={f[0].toUpperCase() + f.slice(1)}
+                          onChange={handleChange}
+                          type={f === 'email' ? 'email' : f === 'number' ? 'tel' : 'text'}
+                          maxLength={f === 'number' ? 10 : undefined}
+                          className={`w-full p-3 pl-10 bg-gray-100 border-2 rounded-lg text-black placeholder:text-gray-500 focus:outline-none focus:bg-white focus:border-purple-500 ${
+                            errors[f] ? "border-red-500" : "border-transparent"
+                          }`}
+                        />
+                    </div>
+                    {errors[f] && (
+                      <p className="text-red-500 text-xs mt-1">{errors[f]}</p>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform flex items-center justify-center"
+                >
+                  {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit & Enroll"}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
-
-      {/* Character Image (Hover par visible hoga) */}
-      <img
-        src={characterImage}
-        alt="Character"
-        className="absolute inset-0 w-full h-full object-contain z-50 opacity-0 scale-90 
-                   transition-all duration-700 ease-out 
-                   group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-[-40px]"
-      />
-
-      {/* Title Image (Top Layer) */}
-      <img
-        src={titleImage}
-        alt="Title"
-        className="relative z-30 w-full transition-transform duration-500 ease-out 
-                   group-hover:translate-y-[-60px]"
-      />
     </div>
   );
 };
 
+// 💎 Glass Image Card Dynamic
+const GlassImageCard = ({ img1, img2 }) => { 
+  const cardRef = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x, { stiffness: 100, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 100, damping: 20 });
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+  
+  const img1X = useTransform(mouseXSpring, [-0.5, 0.5], ["-15px", "15px"]);
+  const img1Y = useTransform(mouseYSpring, [-0.5, 0.5], ["-10px", "10px"]);
+  const img2X = useTransform(mouseXSpring, [-0.5, 0.5], ["15px", "-15px"]);
+  const img2Y = useTransform(mouseYSpring, [-0.5, 0.5], ["10px", "-10px"]);
 
-// Custom CSS animations ke liye style tag
-const CustomStyles = () => (
-  <style>{`
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
-    .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-    .animate-modal-scale-up { animation: scaleUp 0.4s ease-out forwards; }
-    @keyframes scaleUp {
-        from { transform: scale(0.9) translateY(10px); opacity: 0; }
-        to { transform: scale(1) translateY(0); opacity: 1; }
-    }
-    .animate-spin-slow { animation: spin 10s linear infinite; }
-    
-    .opacity-0 { opacity: 0; }
-    .delay-200 { animation-delay: 200ms; }
-    .delay-400 { animation-delay: 400ms; }
-    .delay-600 { animation-delay: 600ms; }
-  `}</style>
-);
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const mouseX = (e.clientX - rect.left) / rect.width - 0.5;
+    const mouseY = (e.clientY - rect.top) / rect.height - 0.5;
+    x.set(mouseX);
+    y.set(mouseY);
+  };
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
-// PlayCircle icon ke liye inline SVG
-const FaPlayCircle = (props) => (
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox="0 0 24 24" 
-        fill="currentColor" 
-        {...props}
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      // THEME CHANGE: Glass card styles for dark background
+      className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] md:w-[480px] md:h-[420px] bg-white/5 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl overflow-visible"
     >
-        <path 
-            fillRule="evenodd" 
-            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z" 
-            clipRule="evenodd" 
-        />
-    </svg>
-);
+      {/* THEME CHANGE: Darker glass effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl" />
+      
+      {/* Animated Text */}
+      <motion.div 
+        className="absolute inset-0 flex flex-col items-center justify-center text-center px-4"
+        style={{ transform: "translateZ(60px)" }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 1.0 }}
+      >
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold shine">
+          RAJSHAILI INSTITUTE
+        </h3>
+        {/* THEME CHANGE: Lighter text for dark bg */}
+        <p className="text-slate-300 mt-2 text-xs sm:text-sm md:text-base">
+          Explore the Power of Vedic Knowledge
+        </p>
+      </motion.div>
 
-// Registration Form Modal
-const RegistrationModal = ({ onClose }) => {
-    const [formData, setFormData] = useState({ name: '', email: '', number: '', address: '' });
-    const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
+      {/* left image (using img1 prop) */}
+      <motion.img
+        src={img1}
+        alt="Left"
+        style={{ x: img1X, y: img1Y, transform: "translateZ(30px)" }}
+        className="absolute -left-10 top-[-10%] w-36 md:w-44 h-auto object-contain rounded-2xl shadow-xl border border-white/20"
+        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/192x256/334155/94a3b8?text=Image+1"; }}
+      />
 
-    const validateForm = () => {
-        const newErrors = {};
-        if (!formData.name.trim()) newErrors.name = "Name is required.";
-        if (!formData.email.trim()) {
-            newErrors.email = "Email is required.";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Email address is invalid.";
-        }
-        if (!formData.number.trim()) {
-            newErrors.number = "Phone number is required.";
-        } else if (!/^\d{10}$/.test(formData.number)) {
-            newErrors.number = "Phone number must be exactly 10 digits.";
-        }
-        if (!formData.address.trim()) newErrors.address = "Address is required.";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: null }));
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validateForm()) return;
-
-        setIsSubmitting(true);
-        try {
-            await axios.post("https://api.raj-shaili.com/api/enrollment-create", formData);
-            setIsSuccess(true); // Show success screen instead of closing
-        } catch (error) {
-            console.error("Submission failed:", error);
-            alert("There was an error submitting your form. Please try again.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    
-    return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn" onClick={onClose}>
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex overflow-hidden animate-modal-scale-up" onClick={(e) => e.stopPropagation()}>
-                {/* Left Side */}
-                <div className="w-2/5 bg-[#192A41] text-white p-8 hidden md:flex flex-col justify-center">
-                    <h2 className="text-3xl font-bold mb-4">RAJSHAILI</h2>
-                    <p className="text-gray-300 mb-8">Discover the power of astrology and unlock the secrets of your destiny</p>
-                    <img
-                        src="hero-img/46992-removebg-preview.png" 
-                        alt="Astrology Wheel"
-                        className="object-contain w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg animate-spin-slow"
-                    />
-                </div>
-                {/* Right Side */}
-                <div className="w-full md:w-3/5 p-8 text-gray-800 relative">
-                    <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"><X size={24}/></button>
-                    
-                    {isSuccess ? (
-                        <div className="text-center flex flex-col justify-center h-full">
-                            <h2 className="text-3xl font-bold mb-4 text-green-600">Registration Successful!</h2>
-                            <p className="text-gray-600 mb-8">Thank you for enrolling. You can now join the meeting using the link below.</p>
-                            <a 
-                                href="https://meet.google.com/your-meeting-code-here" // Yahan apna Google Meet link daalein
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
-                            >
-                                <LinkIcon size={20} /> Join Google Meet
-                            </a>
-                            <button onClick={onClose} className="mt-4 text-sm text-gray-500 hover:underline">Close</button>
-                        </div>
-                    ) : (
-                        <>
-                            <h2 className="text-3xl font-bold mb-2">Enrollment now</h2>
-                            <p className="text-gray-500 mb-6">Enter your information to enroll for the Rajshaili.</p>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                {/* Fields */}
-                                <div>
-                                    <div className="relative"><input type="text" name="name" placeholder="Full Name" onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.name ? 'border-red-500' : 'border-gray-300'}`} /><User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/></div>
-                                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-                                </div>
-                                <div>
-                                    <div className="relative"><input type="email" name="email" placeholder="Your email" onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.email ? 'border-red-500' : 'border-gray-300'}`} /><Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/></div>
-                                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-                                </div>
-                                <div>
-                                    <div className="relative"><input type="tel" name="number" placeholder="Phone Number" onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.number ? 'border-red-500' : 'border-gray-300'}`} maxLength={10}/><Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/></div>
-                                    {errors.number && <p className="text-red-500 text-sm mt-1">{errors.number}</p>}
-                                </div>
-                                <div>
-                                    <div className="relative"><input type="text" name="address" placeholder="Address" onChange={handleInputChange} className={`w-full p-3 border rounded-lg pl-10 ${errors.address ? 'border-red-500' : 'border-gray-300'}`} /><MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/></div>
-                                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
-                                </div>
-                                
-                                <button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:bg-gray-400">
-                                    {isSubmitting ? (<><Loader2 className="animate-spin mr-2" /> Submitting...</>) : 'Submit'}
-                                </button>
-                            </form>
-                        </>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
+      {/* right image (using img2 prop) */}
+      <motion.img
+        src={img2}
+        alt="Right"
+        style={{ x: img2X, y: img2Y, transform: "translateZ(30px)" }}
+        className="absolute -right-10 bottom-[-8%] w-36 md:w-44 h-auto object-contain rounded-2xl shadow-xl border border-white/20"
+        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/192x256/334155/94a3b8?text=Image+2"; }}
+      />
+    </motion.div>
+  );
 };
 
+// 🌟 Hero Section (Main Component)
 export default function HeroSection() {
   const [openVideo, setOpenVideo] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
+  const [homeData, setHomeData] = useState(null); 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-        setOpenForm(true);
-    }, 2000);
+    const fetchHomeData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await axios.get(API_BASE_URL);
+        if (res.data && res.data.length > 0) {
+          setHomeData(res.data[0]);
+        } else {
+          setError("No content found.");
+        }
+      } catch (err) {
+        console.error("Error fetching home data:", err);
+        if (err.message === "Network Error") {
+             setError("Cannot connect to server. Is it running?");
+        } else {
+             setError("Failed to load content.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHomeData();
+
+    const timer = setTimeout(() => setOpenForm(true), 2000);
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-        <section className="w-full overflow-hidden relative bg-[#192A41] p-5">
-        <CustomStyles />
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between min-h-screen pt-20 md:pt-0">
-            {/* Left Text */}
-            <div className="w-full md:w-5/12 text-white text-center md:text-left px-4 md:px-8 z-10">
-                <p className="mb-4 text-sm md:text-base font-semibold tracking-widest text-gray-400 opacity-0 animate-fadeInUp">ANCIENT WISDOM • MODERN CLARITY</p>
-                <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white opacity-0 animate-fadeInUp delay-200">
-                    Rajshaili: The Institute of{" "}<span className="text-yellow-400">Divine Knowledge</span>
-                </h1>
-                <p className="text-base md:text-lg mb-8 font-light max-w-xl mx-auto md:mx-0 text-gray-300 opacity-0 animate-fadeInUp delay-400">
-                    Bridging Vedic Astrology, Vastu & Mental Health with modern science to empower you with clarity, peace & purpose.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-6 opacity-0 animate-fadeInUp delay-600">
-                    <Link to="/courses" className="bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 shadow-yellow-300/50 hover:scale-105 transition-all duration-300 cursor-pointer">
-                        Explore Our Courses
-                    </Link>
-                    <button onClick={() => setOpenVideo(true)} className="flex items-center text-white font-semibold hover:text-yellow-400 transition-colors">
-                        <FaPlayCircle className="mr-2 h-6 w-6" /> Watch Intro
-                    </button>
-                </div>
-            </div>
+  const getYouTubeEmbedUrl = (url) => {
+    if (!url) return null;
+    let videoId = null;
+    try {
+        if (url.includes("youtube.com/watch?v=")) {
+            videoId = new URL(url).searchParams.get("v");
+        } else if (url.includes("youtu.be/")) {
+            videoId = new URL(url).pathname.split('/')[1]?.split(/[?&]/)[0];
+        }
+        if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        }
+    } catch (e) {
+        console.error("Error parsing video URL:", url, e);
+    }
+    return null;
+  };
 
-            {/* Right Images */}
-                <div className="w-full lg:w-1/2 flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 animate-fadeIn delay-400 mt-10 lg:mt-0">
-                <InteractiveCard
-                    coverImage="/hero-img/hero.png"
-                    titleImage="/hero-img/name2.png"
-                    characterImage="/hero-img/hero.png" 
-                />
-                <InteractiveCard
-                    coverImage="/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png"
-                    titleImage="/hero-img/name1.png"
-                    characterImage="/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png"
-                />
-            </div>
+  const videoEmbedUrl = getYouTubeEmbedUrl(homeData?.videoUrl); 
+  const card1ImgSrc = homeData?.card1Image ? `${IMAGE_BASE_URL}${homeData.card1Image}` : "/hero-img/hero.png";
+  const card2ImgSrc = homeData?.card2Image ? `${IMAGE_BASE_URL}${homeData.card2Image}` : "/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png";
+
+  return (
+    // THEME CHANGE: Dark background
+    <section className="relative min-h-screen flex items-center justify-center bg-[#192A41] text-white overflow-hidden py-20">
+      <CustomStyles />
+      
+      {/* THEME CHANGE: Dark background orbs */}
+      <motion.div
+        className="absolute top-0 -left-40 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse"
+        animate={{ scale: [1, 1.05, 1], x: [0, 10, 0], y: [0, 5, 0] }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-0 -right-40 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse"
+        animate={{ scale: [1, 0.95, 1], x: [0, -10, 0], y: [0, -5, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      />
+
+      <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between relative z-10 px-6 gap-16">
+        {/* Left */}
+        <div className="w-full lg:w-1/2 text-center lg:text-left">
+          {/* THEME CHANGE: Text colors updated */}
+          <p className="mb-4 text-sm font-semibold tracking-widest text-cyan-400 uppercase">
+            Ancient Wisdom • Modern Clarity
+          </p>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight text-white">
+            Rajshaili:{" "}
+            {/* THEME CHANGE: CustomTypewriter ko dark theme ke liye adjust kiya (span ke andar) */}
+            <CustomTypewriter />
+          </h1>
+          {/* THEME CHANGE: Text color updated */}
+          <p className="text-base md:text-lg mb-8 max-w-xl mx-auto lg:mx-0 text-slate-300">
+            Bridging Vedic Astrology, Vastu & Mental Health with modern science
+            to empower you with clarity, peace & purpose.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6">
+            <a
+              href="/courses"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all"
+            >
+              Explore Our Courses
+            </a>
+            {/* THEME CHANGE: Text color updated */}
+            {videoEmbedUrl && (
+                <button
+                    onClick={() => setOpenVideo(true)}
+                    className="flex items-center text-slate-200 font-semibold hover:text-white transition-colors group"
+                >
+                    <PlayCircle className="mr-2 h-8 w-8 text-slate-400 group-hover:text-cyan-400" />
+                    Watch Intro
+                </button>
+            )}
+          </div>
         </div>
 
-        {/* Video Modal */}
-        {openVideo && (
-            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-fadeIn" onClick={() => setOpenVideo(false)}>
-                <div className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                    <iframe className="w-full aspect-video rounded-xl" src="https://www.youtube.com/embed/AIJGPal3NM8?autoplay=1&rel=0" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+        {/* Right */}
+        <div className="w-full lg:w-1/2 flex justify-center items-center mt-16 lg:mt-0" style={{ perspective: '1000px' }}>
+            {loading ? (
+                <div className="flex items-center justify-center h-[400px] text-cyan-400">
+                    <Loader2 className="animate-spin" size={48} />
                 </div>
-            </div>
+            ) : error ? (
+                <div className="flex flex-col items-center justify-center h-[400px] text-red-400 p-6 bg-red-900/30 rounded-2xl border border-red-700">
+                    <AlertCircle className="w-12 h-12 mb-3"/>
+                    <span className="font-semibold text-center">{error}</span>
+                </div>
+            ) : (
+                // Glass card ab dark background par render hoga
+                <GlassImageCard img1={card1ImgSrc} img2={card2ImgSrc} />
+            )}
+        </div>
+      </div>
+
+      {/* Video Modal (No changes) */}
+      <AnimatePresence>
+        {openVideo && videoEmbedUrl && (
+          <motion.div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpenVideo(false)}
+          >
+            <motion.div
+              className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <iframe
+                className="w-full h-full"
+                src={videoEmbedUrl} // Use the dynamic URL
+                title="YouTube player"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </motion.div>
+          </motion.div>
         )}
-        
-        {/* Registration Modal */}
+      </AnimatePresence>
+
+      {/* Registration Modal (No changes) */}
+      <AnimatePresence>
         {openForm && <RegistrationModal onClose={() => setOpenForm(false)} />}
-        </section>
+      </AnimatePresence>
+    </section>
   );
 }
 

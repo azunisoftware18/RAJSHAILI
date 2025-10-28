@@ -138,7 +138,7 @@
         {/* Left Side - Image */}
         <div className="hidden lg:block w-1/2 relative overflow-hidden">
           <img
-            src="https://placehold.co/1000x1200/221A37/8240f2?text=Neon+Tree+Background"
+            src="https://astrology.tv/wp-content/uploads/2019/12/shutterstock_756180220-768x510.png"
             alt="Neon Background"
             className="w-full h-full object-cover brightness-110"
           />

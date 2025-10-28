@@ -21,6 +21,9 @@ import Testimonials from './Pages/testimonials.jsx';
 import Login from './Pages/Login.jsx';
 import Profile from './Pages/Profile.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx'; // ✅ import added
+import ForgotPassword from './components/ForgotPassword.jsx';
+import VideoManager from './Pages/admin/VideoManager.jsx';
+import HomeAdminPage from './Pages/admin/EditHome.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,6 +40,7 @@ const router = createBrowserRouter(
         <Route path="testimonials" element={<Testimonials />} />
         <Route path="login" element={<Login />} />
         <Route path="profile" element={<Profile />} />
+        <Route path='forgot-password' element={<ForgotPassword/>}/>
       </Route>
 
       {/* ✅ Protected Admin Routes */}
@@ -54,6 +58,8 @@ const router = createBrowserRouter(
         <Route path="user" element={<UserTable />} />
         <Route path="courseform" element={<AddCourseForm />} />
         <Route path="message" element={<ContactMessage />} />
+        <Route path='video' element={<VideoManager/>}/>
+        <Route path='edithome' element={<HomeAdminPage/>}/>
       </Route>
     </>
   )

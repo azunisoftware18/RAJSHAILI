@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Settings, Book, User2, DollarSign, Menu, X, Info, MessageCircleIcon, User } from 'lucide-react';
+import { Home, Settings, Book, User2, DollarSign, Menu, X, Info, MessageCircleIcon, User, VideoIcon, Edit } from 'lucide-react';
 // BrowserRouter ko HashRouter se replace kiya gaya hai
 import { Link, useLocation, HashRouter } from "react-router-dom";
 
@@ -61,34 +61,52 @@ function SidebarNav() {
                         <Home className="w-5 h-5 mr-3" />
                         Dashboard
                     </Link>
+
                     <Link to="/admin/aboutfrom" onClick={handleLinkClick} className={getLinkClass("/admin/aboutfrom")}>
                         <Info className="w-5 h-5 mr-3" />
                         About
                     </Link>
+
                     <Link to="/admin/settings" onClick={handleLinkClick} className={getLinkClass("/admin/settings")}>
                         <Settings className="w-5 h-5 mr-3" />
                         Settings
                     </Link>
+
                     <Link to="/admin/courseform" onClick={handleLinkClick} className={getLinkClass("/admin/courseform")}>
                         <Book className="w-5 h-5 mr-3" />
                         Courses
                     </Link>
+
                     <Link to="/admin/user" onClick={handleLinkClick} className={getLinkClass("/admin/user")}>
                         <User2 className="w-5 h-5 mr-3" />
                         Users
                     </Link>
+
                     <Link to="/admin/message" onClick={handleLinkClick} className={getLinkClass("/admin/message")}>
                         <MessageCircleIcon className="w-5 h-5 mr-3" />
                         message
                     </Link>
-                    <Link to="/admin/subscription" onClick={handleLinkClick} className={getLinkClass("/admin/subscription")}>
+
+                    {/* <Link to="/admin/subscription" onClick={handleLinkClick} className={getLinkClass("/admin/subscription")}>
                         <DollarSign className="w-5 h-5 mr-3" />
                         Subscription
-                    </Link>
-                    <Link to="/admin/enrollments" onClick={handleLinkClick} className={getLinkClass("/admin/subscription")}>
+                    </Link> */}
+
+                    <Link to="/admin/enrollments" onClick={handleLinkClick} className={getLinkClass("/admin/enrollments")}>
                         <User className="w-5 h-5 mr-3" />
                         Enrollments
                     </Link>
+                    
+                    <Link to="/admin/video" onClick={handleLinkClick} className={getLinkClass("/admin/video")}>
+                        <VideoIcon className="w-5 h-5 mr-3" />
+                        Video
+                    </Link>
+
+                    <Link to="/admin/edithome" onClick={handleLinkClick} className={getLinkClass("/admin/edithome")}>
+                        <Edit className="w-5 h-5 mr-3" />
+                        Edit-Hero-img
+                    </Link>
+
                 </nav>
             </div>
             
