@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-// import { Link } from "react-router-dom"; // Link component is not used
 import {
   User,
   Mail,
@@ -23,7 +22,10 @@ import {
 
 // --- API and Image Base URLs ---
 const API_BASE_URL = "http://localhost:3000/api/home";
-const IMAGE_BASE_URL = "http://localhost:3000/"; 
+const IMAGE_BASE_URL = "http://localhost:3000/";
+// --- NEW API URL FOR REGISTRATION ---
+const REGISTRATION_API_URL = "http://localhost:3000/api/enrollment-create";
+
 
 // 🌈 Custom Animations (CSS)
 const CustomStyles = () => (
@@ -120,7 +122,7 @@ const CustomTypewriter = () => {
 // --- End of CustomTypewriter ---
 
 
-// 🌟 Registration Modal (No changes)
+// 🌟 Registration Modal (Updated HandleSubmit)
 const RegistrationModal = ({ onClose }) => {
   const [formData, setFormData] = useState({ name: "", email: "", number: "", address: "" });
   const [errors, setErrors] = useState({});
@@ -140,19 +142,30 @@ const RegistrationModal = ({ onClose }) => {
   const handleChange = (e) =>
     setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
+  // --- UPDATED HANDLESUBMIT ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsSubmitting(true);
     try {
-      await axios.post("https://api.raj-shaili.com/api/enrollment-create", formData);
-      setIsSuccess(true);
+      // API URL ko naye URL se update kiya gaya hai
+      const res = await axios.post(REGISTRATION_API_URL, formData);
+
+      if (res.data.success) {
+          setIsSuccess(true);
+      } else {
+          // Agar API success: false bhejta hai (jaise validation error)
+          alert(res.data.message || "An unknown error occurred.");
+      }
     } catch (err) {
-      alert("Error submitting form. Try again.");
+      // Server se specific error message (jaise 409 Conflict) dikhaya
+      console.error("Submission failed:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Error submitting form. Try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
+  // --- END OF UPDATED HANDLESUBMIT ---
 
   return (
     <div
@@ -287,13 +300,10 @@ const GlassImageCard = ({ img1, img2 }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-      // THEME CHANGE: Glass card styles for dark background
       className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] md:w-[480px] md:h-[420px] bg-white/5 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl overflow-visible"
     >
-      {/* THEME CHANGE: Darker glass effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl" />
       
-      {/* Animated Text */}
       <motion.div 
         className="absolute inset-0 flex flex-col items-center justify-center text-center px-4"
         style={{ transform: "translateZ(60px)" }}
@@ -304,13 +314,11 @@ const GlassImageCard = ({ img1, img2 }) => {
         <h3 className="text-xl sm:text-2xl md:text-3xl font-bold shine">
           RAJSHAILI INSTITUTE
         </h3>
-        {/* THEME CHANGE: Lighter text for dark bg */}
         <p className="text-slate-300 mt-2 text-xs sm:text-sm md:text-base">
           Explore the Power of Vedic Knowledge
         </p>
       </motion.div>
 
-      {/* left image (using img1 prop) */}
       <motion.img
         src={img1}
         alt="Left"
@@ -318,8 +326,6 @@ const GlassImageCard = ({ img1, img2 }) => {
         className="absolute -left-10 top-[-10%] w-36 md:w-44 h-auto object-contain rounded-2xl shadow-xl border border-white/20"
         onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/192x256/334155/94a3b8?text=Image+1"; }}
       />
-
-      {/* right image (using img2 prop) */}
       <motion.img
         src={img2}
         alt="Right"
@@ -391,11 +397,9 @@ export default function HeroSection() {
   const card2ImgSrc = homeData?.card2Image ? `${IMAGE_BASE_URL}${homeData.card2Image}` : "/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png";
 
   return (
-    // THEME CHANGE: Dark background
     <section className="relative min-h-screen flex items-center justify-center bg-[#192A41] text-white overflow-hidden py-20">
       <CustomStyles />
       
-      {/* THEME CHANGE: Dark background orbs */}
       <motion.div
         className="absolute top-0 -left-40 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse"
         animate={{ scale: [1, 1.05, 1], x: [0, 10, 0], y: [0, 5, 0] }}
@@ -408,18 +412,14 @@ export default function HeroSection() {
       />
 
       <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between relative z-10 px-6 gap-16">
-        {/* Left */}
         <div className="w-full lg:w-1/2 text-center lg:text-left">
-          {/* THEME CHANGE: Text colors updated */}
           <p className="mb-4 text-sm font-semibold tracking-widest text-cyan-400 uppercase">
             Ancient Wisdom • Modern Clarity
           </p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight text-white">
             Rajshaili:{" "}
-            {/* THEME CHANGE: CustomTypewriter ko dark theme ke liye adjust kiya (span ke andar) */}
             <CustomTypewriter />
           </h1>
-          {/* THEME CHANGE: Text color updated */}
           <p className="text-base md:text-lg mb-8 max-w-xl mx-auto lg:mx-0 text-slate-300">
             Bridging Vedic Astrology, Vastu & Mental Health with modern science
             to empower you with clarity, peace & purpose.
@@ -431,7 +431,6 @@ export default function HeroSection() {
             >
               Explore Our Courses
             </a>
-            {/* THEME CHANGE: Text color updated */}
             {videoEmbedUrl && (
                 <button
                     onClick={() => setOpenVideo(true)}
@@ -444,7 +443,6 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Right */}
         <div className="w-full lg:w-1/2 flex justify-center items-center mt-16 lg:mt-0" style={{ perspective: '1000px' }}>
             {loading ? (
                 <div className="flex items-center justify-center h-[400px] text-cyan-400">
@@ -456,13 +454,12 @@ export default function HeroSection() {
                     <span className="font-semibold text-center">{error}</span>
                 </div>
             ) : (
-                // Glass card ab dark background par render hoga
                 <GlassImageCard img1={card1ImgSrc} img2={card2ImgSrc} />
             )}
         </div>
       </div>
 
-      {/* Video Modal (No changes) */}
+      {/* Video Modal */}
       <AnimatePresence>
         {openVideo && videoEmbedUrl && (
           <motion.div
@@ -492,7 +489,7 @@ export default function HeroSection() {
         )}
       </AnimatePresence>
 
-      {/* Registration Modal (No changes) */}
+      {/* Registration Modal */}
       <AnimatePresence>
         {openForm && <RegistrationModal onClose={() => setOpenForm(false)} />}
       </AnimatePresence>

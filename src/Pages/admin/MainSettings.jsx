@@ -13,7 +13,6 @@ import {
   Facebook,
   Twitter,
   Instagram,
-  Linkedin,
 } from "lucide-react";
 
 // --- Setting Item Component ---
@@ -54,177 +53,175 @@ const EditModal = ({
   onSave,
   onInputChange,
   onFileChange,
-}) => (
-  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
-      <div className="flex justify-between items-center p-5 border-b border-gray-200">
-        <h2 className="text-xl font-bold text-gray-900">Edit {section}</h2>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-          <X size={24} />
-        </button>
-      </div>
+}) => {
+  const BACKEND_URL = "http://localhost:3000"; // ✅ backend base URL
 
-      <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
-        {section === "Company Information" && (
-          <>
-            <div>
-              <label className="text-sm font-medium">Company Name</label>
-              <input
-                type="text"
-                name="companyName"
-                value={data.companyName}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-            <div className="flex items-center space-x-4">
-              {initialData.companyLogo && (
-                <img
-                  src={initialData.companyLogo}
-                  alt="Logo Preview"
-                  className="h-16 w-16 object-contain rounded-md border"
-                />
-              )}
+  return (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+        <div className="flex justify-between items-center p-5 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900">Edit {section}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+          {section === "Company Information" && (
+            <>
               <div>
-                <label className="text-sm font-medium">Company Logo</label>
+                <label className="text-sm font-medium">Company Name</label>
                 <input
-                  type="file"
-                  name="companyLogo"
-                  onChange={onFileChange}
-                  className="w-full mt-1 text-sm"
+                  type="text"
+                  name="companyName"
+                  value={data.companyName}
+                  onChange={onInputChange}
+                  className="w-full mt-1 p-2 border rounded-md"
                 />
               </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {initialData.favicon && (
-                <img
-                  src={initialData.favicon}
-                  alt="Favicon Preview"
-                  className="h-16 w-16 object-contain rounded-md border"
-                />
-              )}
+
+              {/* --- Company Logo --- */}
+              <div className="flex items-center space-x-4">
+                {initialData.companyLogo && (
+                  <img
+                    src={`${BACKEND_URL}${initialData.companyLogo}`}
+                    alt="Logo Preview"
+                    className="h-16 w-16 object-contain rounded-md border"
+                  />
+                )}
+                <div>
+                  <label className="text-sm font-medium">Company Logo</label>
+                  <input
+                    type="file"
+                    name="companyLogo"
+                    onChange={onFileChange}
+                    className="w-full mt-1 text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* --- Favicon --- */}
+              <div className="flex items-center space-x-4">
+                {initialData.favicon && (
+                  <img
+                    src={`${BACKEND_URL}${initialData.favicon}`}
+                    alt="Favicon Preview"
+                    className="h-16 w-16 object-contain rounded-md border"
+                  />
+                )}
+                <div>
+                  <label className="text-sm font-medium">Favicon</label>
+                  <input
+                    type="file"
+                    name="favicon"
+                    onChange={onFileChange}
+                    className="w-full mt-1 text-sm"
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
+          {section === "Contact Information" && (
+            <>
               <div>
-                <label className="text-sm font-medium">Favicon</label>
+                <label className="text-sm font-medium">Phone Number</label>
                 <input
-                  type="file"
-                  name="favicon"
-                  onChange={onFileChange}
-                  className="w-full mt-1 text-sm"
+                  type="text"
+                  name="phoneNumber"
+                  value={data.phoneNumber}
+                  onChange={onInputChange}
+                  className="w-full mt-1 p-2 border rounded-md"
                 />
               </div>
-            </div>
-          </>
-        )}
+              <div>
+                <label className="text-sm font-medium">Email Address</label>
+                <input
+                  type="email"
+                  name="emailAddress"
+                  value={data.emailAddress}
+                  onChange={onInputChange}
+                  className="w-full mt-1 p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">WhatsApp Number</label>
+                <input
+                  type="text"
+                  name="whatsappNumber"
+                  value={data.whatsappNumber}
+                  onChange={onInputChange}
+                  className="w-full mt-1 p-2 border rounded-md"
+                />
+              </div>
+            </>
+          )}
 
-        {section === "Contact Information" && (
-          <>
-            <div>
-              <label className="text-sm font-medium">Phone Number</label>
-              <input
-                type="text"
-                name="phoneNumber"
-                value={data.phoneNumber}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Email Address</label>
-              <input
-                type="email"
-                name="emailAddress"
-                value={data.emailAddress}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">WhatsApp Number</label>
-              <input
-                type="text"
-                name="whatsappNumber"
-                value={data.whatsappNumber}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-          </>
-        )}
+          {section === "Social Media Links" && (
+            <>
+              <div>
+                <label className="text-sm font-medium">Facebook URL</label>
+                <input
+                  type="text"
+                  name="facebookUrl"
+                  value={data.facebookUrl}
+                  onChange={onInputChange}
+                  className="w-full mt-1 p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Twitter URL</label>
+                <input
+                  type="text"
+                  name="twitterUrl"
+                  value={data.twitterUrl}
+                  onChange={onInputChange}
+                  className="w-full mt-1 p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Instagram URL</label>
+                <input
+                  type="text"
+                  name="instagramUrl"
+                  value={data.instagramUrl}
+                  onChange={onInputChange}
+                  className="w-full mt-1 p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">YouTube URL</label>
+                <input
+                  type="text"
+                  name="youtubeUrl"
+                  value={data.youtubeUrl}
+                  onChange={onInputChange}
+                  className="w-full mt-1 p-2 border rounded-md"
+                />
+              </div>
+            </>
+          )}
+        </div>
 
-        {section === "Social Media Links" && (
-          <>
-            <div>
-              <label className="text-sm font-medium">Facebook URL</label>
-              <input
-                type="text"
-                name="facebookUrl"
-                value={data.facebookUrl}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Twitter URL</label>
-              <input
-                type="text"
-                name="twitterUrl"
-                value={data.twitterUrl}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Instagram URL</label>
-              <input
-                type="text"
-                name="instagramUrl"
-                value={data.instagramUrl}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Website URL</label>
-              <input
-                type="text"
-                name="websiteUrl"
-                value={data.websiteUrl}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">LinkedIn URL</label>
-              <input
-                type="text"
-                name="linkedinUrl"
-                value={data.linkedinUrl}
-                onChange={onInputChange}
-                className="w-full mt-1 p-2 border rounded-md"
-              />
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="flex justify-end items-center p-5 border-t border-gray-200 bg-gray-50 rounded-b-xl">
-        <button
-          onClick={onClose}
-          className="px-4 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-200 mr-2"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 flex items-center space-x-2"
-        >
-          <Save size={16} />
-          <span>Save Changes</span>
-        </button>
+        <div className="flex justify-end items-center p-5 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-200 mr-2"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onSave}
+            className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 flex items-center space-x-2"
+          >
+            <Save size={16} />
+            <span>Save Changes</span>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // --- Main Settings Page ---
 export default function MainSettings() {
@@ -234,6 +231,7 @@ export default function MainSettings() {
   const [tempSettings, setTempSettings] = useState({});
 
   const API_URL = "http://localhost:3000/api/settings";
+  const BACKEND_URL = "http://localhost:3000";
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -293,28 +291,98 @@ export default function MainSettings() {
       <div className="w-full">
         <div className="mb-8">
           <h1 className="text-4xl font-extrabold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-1">Manage your application settings and configurations.</p>
+          <p className="text-gray-600 mt-1">
+            Manage your application settings and configurations.
+          </p>
         </div>
 
         <div className="space-y-8">
-          <SettingsSection title="Company Information" onEditClick={() => handleEdit("Company Information")}>
-            <SettingsItem icon={<Building size={20} />} label="Name" value={settings.companyName} />
-            <SettingsItem icon={<ImageIcon size={20} />} label="Company Logo" value={settings.companyLogo ? "Logo uploaded" : "Not set"} />
-            <SettingsItem icon={<LinkIcon size={20} />} label="Favicon" value={settings.favicon ? "Favicon uploaded" : "Not set"} />
+          <SettingsSection
+            title="Company Information"
+            onEditClick={() => handleEdit("Company Information")}
+          >
+            <SettingsItem
+              icon={<Building size={20} />}
+              label="Name"
+              value={settings.companyName}
+            />
+            <SettingsItem
+              icon={<ImageIcon size={20} />}
+              label="Company Logo"
+              value={
+                settings.companyLogo ? (
+                  <img
+                    src={`${BACKEND_URL}${settings.companyLogo}`}
+                    alt="Logo"
+                    className="h-12 rounded-md"
+                  />
+                ) : (
+                  "Not set"
+                )
+              }
+            />
+            <SettingsItem
+              icon={<LinkIcon size={20} />}
+              label="Favicon"
+              value={
+                settings.favicon ? (
+                  <img
+                    src={`${BACKEND_URL}${settings.favicon}`}
+                    alt="Favicon"
+                    className="h-10 rounded-md"
+                  />
+                ) : (
+                  "Not set"
+                )
+              }
+            />
           </SettingsSection>
 
-          <SettingsSection title="Contact Information" onEditClick={() => handleEdit("Contact Information")}>
-            <SettingsItem icon={<Phone size={20} />} label="Phone Number" value={settings.phoneNumber} />
-            <SettingsItem icon={<Mail size={20} />} label="Email Address" value={settings.emailAddress} />
-            <SettingsItem icon={<Phone size={20} />} label="WhatsApp Number" value={settings.whatsappNumber} />
+          <SettingsSection
+            title="Contact Information"
+            onEditClick={() => handleEdit("Contact Information")}
+          >
+            <SettingsItem
+              icon={<Phone size={20} />}
+              label="Phone Number"
+              value={settings.phoneNumber}
+            />
+            <SettingsItem
+              icon={<Mail size={20} />}
+              label="Email Address"
+              value={settings.emailAddress}
+            />
+            <SettingsItem
+              icon={<Phone size={20} />}
+              label="WhatsApp Number"
+              value={settings.whatsappNumber}
+            />
           </SettingsSection>
 
-          <SettingsSection title="Social Media Links" onEditClick={() => handleEdit("Social Media Links")}>
-            <SettingsItem icon={<Facebook size={20} />} label="Facebook URL" value={settings.facebookUrl} />
-            <SettingsItem icon={<Twitter size={20} />} label="Twitter URL" value={settings.twitterUrl} />
-            <SettingsItem icon={<Instagram size={20} />} label="Instagram URL" value={settings.instagramUrl} />
-            <SettingsItem icon={<Globe size={20} />} label="Website URL" value={settings.websiteUrl} />
-            <SettingsItem icon={<Linkedin size={20} />} label="LinkedIn URL" value={settings.linkedinUrl} />
+          <SettingsSection
+            title="Social Media Links"
+            onEditClick={() => handleEdit("Social Media Links")}
+          >
+            <SettingsItem
+              icon={<Facebook size={20} />}
+              label="Facebook URL"
+              value={settings.facebookUrl}
+            />
+            <SettingsItem
+              icon={<Twitter size={20} />}
+              label="Twitter URL"
+              value={settings.twitterUrl}
+            />
+            <SettingsItem
+              icon={<Instagram size={20} />}
+              label="Instagram URL"
+              value={settings.instagramUrl}
+            />
+            <SettingsItem
+              icon={<Globe size={20} />}
+              label="YouTube URL"
+              value={settings.youtubeUrl}
+            />
           </SettingsSection>
         </div>
       </div>

@@ -27,7 +27,7 @@ export default function PrivacyPolicy() {
         <div className="bg-[#192A41] min-h-screen text-white">
             <div className="container mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
                 {/* Page Header */}
-                <header className="mb-12 text-center">
+                <header className="mb-12 text-center pt-20">
                     <h1 className="text-4xl sm:text-5xl font-extrabold text-white pb-2">
                         Privacy Policy
                     </h1>

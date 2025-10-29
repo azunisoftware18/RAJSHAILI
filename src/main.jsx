@@ -36,7 +36,7 @@ const router = createBrowserRouter(
         <Route path="courses" element={<CoursesPage />} />
         <Route path="helpcare" element={<HelpCare />} />
         <Route path="privacypolicy" element={<PrivacyPolicy />} />
-        <Route path="enrollments" element={<Enrollments />} />
+        
         <Route path="testimonials" element={<Testimonials />} />
         <Route path="login" element={<Login />} />
         <Route path="profile" element={<Profile />} />
@@ -60,6 +60,7 @@ const router = createBrowserRouter(
         <Route path="message" element={<ContactMessage />} />
         <Route path='video' element={<VideoManager/>}/>
         <Route path='edithome' element={<HomeAdminPage/>}/>
+        <Route path="enrollments" element={<Enrollments />} />
       </Route>
     </>
   )
