@@ -4,7 +4,7 @@ import { PlayCircle, X, Youtube, Loader2, Video } from "lucide-react";
 // Import the hook for scroll animations
 import { useInView } from 'react-intersection-observer';
 
-const API = "${import.meta.VITE_API_URL}";
+const API = `${import.meta.VITE_API_URL}`;
 
 // Animated Video Card Component
 const AnimatedVideoCard = ({ video, onClick, index }) => {
@@ -76,24 +76,25 @@ export default function VideoManager() {
     fetchVideos();
   }, []);
 
-  const fetchVideos = async () => {
-    setLoading(true);
-    setError(""); // Clear previous errors
-    try {
-      const res = await axios.get(`${API}/videos`);
-      setVideoList(res.data);
-    } catch (err) {
-      console.error("Failed to fetch videos:", err);
-      // Set error message based on the error type
-       if (err.message === "Network Error") {
-            setError("Failed to connect to the server. Please ensure the backend is running.");
-       } else {
-            setError("Could not load videos. Please try refreshing the page.");
-       }
-    } finally {
-      setLoading(false);
+const fetchVideos = async () => {
+  setLoading(true);
+  setError("");
+  try {
+    const res = await axios.get(`${API}/videos`);
+    console.log("Fetched data:", res.data); // 👈 यह लाइन जोड़ो
+  setVideoList(res?.data?.videos || []);
+  } catch (err) {
+    console.error("Failed to fetch videos:", err);
+    if (err.message === "Network Error") {
+      setError("Failed to connect to the server. Please ensure the backend is running.");
+    } else {
+      setError("Could not load videos. Please try refreshing the page.");
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const getEmbedUrl = (url, autoplay = false) => {
     if (!url) return null;
@@ -126,7 +127,7 @@ export default function VideoManager() {
             <Loader2 className="animate-spin text-blue-500 w-12 h-12" />
             <p className="ml-4 text-xl text-slate-600">Loading videos...</p>
           </div>
-        ) : videoList.length === 0 && !error ? ( // Show only if no error
+        ) : videoList?.length === 0 && !error ? ( // Show only if no error
           <div className="flex flex-col items-center justify-center h-64 text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-300 p-8">
             <Video size={64} className="mb-4 text-slate-400" />
             <p className="text-xl font-medium">No videos found yet.</p>
@@ -134,14 +135,23 @@ export default function VideoManager() {
           </div>
         ) : !error && ( // Only render list if no error
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {videoList.map((video, index) => (
-              <AnimatedVideoCard
-                  key={video.id}
-                  video={video}
-                  onClick={setViewVideo}
-                  index={index} // Pass index for stagger effect
-              />
-            ))}
+           {Array.isArray(videoList) && videoList.length > 0 ? (
+  videoList.map((video, index) => (
+    <AnimatedVideoCard
+      key={video.id}
+      video={video}
+      onClick={setViewVideo}
+      index={index}
+    />
+  ))
+) : (
+  <div className="flex flex-col items-center justify-center h-64 text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-300 p-8">
+    <Video size={64} className="mb-4 text-slate-400" />
+    <p className="text-xl font-medium">No videos found yet.</p>
+    <p className="text-md">Check back soon for new content!</p>
+  </div>
+)}
+
           </div>
         )}
 
