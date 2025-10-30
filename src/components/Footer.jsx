@@ -11,7 +11,7 @@ export default function Footer() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await axios.get("${import.meta.VITE_API_URL}/settings");
+        const res = await axios.get("${import.meta.env.VITE_API_URL}/settings");
         setSettings(res.data);
       } catch (error) {
         console.error("Error fetching settings:", error);
@@ -68,7 +68,7 @@ export default function Footer() {
               <a href="/">
                 {settings?.companyLogo ? (
                   <img
-                    src={`${import.meta.VITE_API_URL}/uploads/${settings.companyLogo}`}
+                    src={`${import.meta.env.VITE_API_URL}/uploads/${settings.companyLogo}`}
                     alt={settings.companyName}
                     className="h-10 w-auto filter brightness-0 invert"
                     onError={(e) => {

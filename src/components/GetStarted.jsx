@@ -4,8 +4,8 @@ import { Loader2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 // --- API URLs ---
-const API_BASE_URL = "${import.meta.VITE_API_URL}/home";
-const IMAGE_BASE_URL = "${import.meta.VITE_API_URL}";
+const API_BASE_URL = "${import.meta.env.VITE_API_URL}/home";
+const IMAGE_BASE_URL = "${import.meta.env.VITE_API_URL}";
 
 // Data remains the same
 const steps = [

@@ -69,7 +69,7 @@ const CourseDetailModal = ({ course, onClose }) => {
             {/* Image */}
             <div className="relative h-full min-h-[300px] md:min-h-full">
               <img 
-                src={`${import.meta.VITE_API_URL}/${course.imageUrl}`} 
+                src={`${import.meta.env.VITE_API_URL}/${course.imageUrl}`} 
                 alt={course.name}
                 className="w-full h-full object-cover"
               />
@@ -126,7 +126,7 @@ const CourseCard = ({ course, onClick }) => (
   >
     <div className="overflow-hidden relative">
       <img
-        src={`${import.meta.VITE_API_URL}/${course.imageUrl}`}
+        src={`${import.meta.env.VITE_API_URL}/${course.imageUrl}`}
         alt={course.name}
         className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
       />
@@ -160,7 +160,7 @@ export default function CoursesPage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get("${import.meta.VITE_API_URL}/api/courses");
+        const res = await axios.get("${import.meta.env.VITE_API_URL}/api/courses");
         setCourses(res.data);
       } catch (err) {
         console.error("Failed to fetch courses:", err);

@@ -52,7 +52,7 @@ export default function CourseManager() {
   const [editId, setEditId] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const API = `${import.meta.VITE_API_URL}/`;
+  const API = `${import.meta.env.VITE_API_URL}/`;
 
   // Fetch courses
   const fetchCourses = async () => {

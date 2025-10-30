@@ -66,7 +66,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const settingsRef = useRef(null);
 
-  const BASE_URL = "${import.meta.VITE_API_URL}";
+  const BASE_URL = "${import.meta.env.VITE_API_URL}";
 
   // Auto-hide toast
   useEffect(() => {

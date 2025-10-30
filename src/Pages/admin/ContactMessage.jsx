@@ -129,7 +129,7 @@ export default function ContactMessage() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`${import.meta.VITE_API_URL}/message-get-all`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/message-get-all`);
         setMessages(res.data.map((msg) => ({ ...msg, unread: true })));
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -146,7 +146,7 @@ export default function ContactMessage() {
     if (!window.confirm("Are you sure you want to delete this message?")) return;
 
     try {
-      await axios.delete(`${import.meta.VITE_API_URL}/message-delete/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/message-delete/${id}`);
       setMessages((prev) => prev.filter((msg) => msg.id !== id));
       setSelectedMessage(null);
       alert("Message deleted successfully ✅");

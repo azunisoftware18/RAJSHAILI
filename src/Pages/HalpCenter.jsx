@@ -4,7 +4,7 @@ import { Phone, Mail, MessageCircle, Facebook, Twitter, Instagram, Youtube, Load
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 // API URL (wahi hai)
-const API_URL = "${import.meta.VITE_API_URL}/settings";
+const API_URL = "${import.meta.env.VITE_API_URL}/settings";
 
 // --- Naya 3D Tilt Card Component (Dark Theme) ---
 const TiltContactCard = ({ icon, label, value, link }) => {

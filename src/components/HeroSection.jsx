@@ -21,10 +21,10 @@ import {
 // import { Typewriter } from "react-simple-typewriter"; // Removed library
 
 // --- API and Image Base URLs ---
-const API_BASE_URL = `${import.meta.VITE_API_URL}/home`;
-const IMAGE_BASE_URL = `${import.meta.VITE_API_URL}`;
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/home`;
+const IMAGE_BASE_URL = `${import.meta.env.VITE_API_URL}`;
 // --- NEW API URL FOR REGISTRATION ---
-const REGISTRATION_API_URL = `${import.meta.VITE_API_URL}/enrollment-create`;
+const REGISTRATION_API_URL = `${import.meta.env.VITE_API_URL}/enrollment-create`;
 
 
 // 🌈 Custom Animations (CSS)

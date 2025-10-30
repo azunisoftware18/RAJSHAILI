@@ -3,8 +3,8 @@ import axios from "axios"; // Added axios
 import { CheckCircle, Loader2, AlertCircle, BookOpen } from 'lucide-react';
 
 // --- API URLs ---
-const API_BASE_URL = `${import.meta.VITE_API_URL}/home`;
-const IMAGE_BASE_URL = `${import.meta.VITE_API_URL}`;
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/home`;
+const IMAGE_BASE_URL = `${import.meta.env.VITE_API_URL}`;
 
 // Data remains the same
 const ContentDataList = [
