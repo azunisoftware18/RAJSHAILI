@@ -22,7 +22,7 @@ const AboutForm = () => {
   useEffect(() => {
     const fetchAboutData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/about-get-all");
+        const res = await axios.get(`${import.meta.VITE_API_URL}/about-get-all`);
         const data = res.data;
 
         if (data && data.length > 0) {
@@ -89,7 +89,7 @@ const AboutForm = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/about-update/${form.id}`,
+        `${import.meta.VITE_API_URL}/about-update/${form.id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -131,7 +131,7 @@ const AboutForm = () => {
   const renderForm = (form, setForm, sectionTitle) => {
     const fullImageUrl = form.previewImage
       ? form.previewImage.startsWith("/uploads")
-        ? `http://localhost:3000${form.previewImage}` // DB se stored image
+        ? `${import.meta.VITE_API_URL}${form.previewImage}` // DB se stored image
         : form.previewImage
       : null;
 

@@ -31,7 +31,7 @@ export default function ContactForm() {
     setLoading(true);
     try {
       // Send form data to backend API
-      const res = await axios.post("http://localhost:3000/api/message-create", {
+      const res = await axios.post(`${import.meta.VITE_API_URL}/message-create`, {
         name: formData.fullName,
         email: formData.email,
         number: formData.phoneNumber,

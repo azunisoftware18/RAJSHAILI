@@ -6,9 +6,9 @@ import { Users, Loader2, AlertCircle, Trash2, Search, Mail, Phone, MapPin, User,
 
 // --- API Configuration ---
 // GET route jo aapne diya hai
-const API_GET_URL = "http://localhost:3000/api/enrollment-list"; 
+const API_GET_URL = "${import.meta.VITE_API_URL}/enrollment-list"; 
 // FIX: Delete URL ko aapke naye route se update kar diya gaya hai
-const API_DELETE_URL = "http://localhost:3000/api/enrollment-delete"; // Pehle "/api/enrollments" tha
+const API_DELETE_URL = "${import.meta.VITE_API_URL}/enrollment-delete"; // Pehle "/api/enrollments" tha
 
 // --- Helper function to format date ---
 const formatDateTime = (dateString) => {

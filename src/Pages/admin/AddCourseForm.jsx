@@ -52,7 +52,7 @@ export default function CourseManager() {
   const [editId, setEditId] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const API = "http://localhost:3000/api";
+  const API = `${import.meta.VITE_API_URL}/`;
 
   // Fetch courses
   const fetchCourses = async () => {
@@ -254,7 +254,7 @@ export default function CourseManager() {
                 {/* Image */}
                 <div className="relative w-full h-40 overflow-hidden rounded-t-xl">
                   <img
-                    src={course.imageUrl.startsWith("http") ? course.imageUrl : `http://localhost:3000${course.imageUrl}`}
+                    src={course.imageUrl.startsWith("http") ? course.imageUrl : `${API}${course.imageUrl}`}
                     alt={course.name}
                     className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
                     onError={(e) => {

@@ -4,9 +4,9 @@ import { UploadCloud, Edit, Trash2, Save, XCircle, Image as ImageIcon, Video, Al
 
 // API base URL ko yahan define karein (Apne Express server ke according change karein)
 // **Important:** Ensure your backend server is running and accessible at these URLs.
-const API_BASE_URL = "http://localhost:3000/api/home";
-const UPLOAD_URL = "http://localhost:3000/api/home/upload"; // Assuming separate upload endpoint
-const IMAGE_BASE_URL = "http://localhost:3000/"; // Base URL for displaying images
+const API_BASE_URL = `${import.meta.VITE_API_URL}/home`;
+const UPLOAD_URL = `${import.meta.VITE_API_URL}/home/upload`; // Assuming separate upload endpoint
+const IMAGE_BASE_URL = `${import.meta.VITE_API_URL}/`; // Base URL for displaying images
 
 // Changed function declaration to include export default directly
 export default function HomeAdminUploader() {

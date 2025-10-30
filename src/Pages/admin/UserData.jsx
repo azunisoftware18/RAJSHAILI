@@ -30,7 +30,7 @@ export default function UserTable() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:3000/api/admin/users", {
+      const res = await axios.get(`${import.meta.VITE_API_URL}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data.users || res.data);
@@ -48,7 +48,7 @@ export default function UserTable() {
   const handleDelete = async (userId) => {
     if (!window.confirm(`Are you sure you want to delete this user?`)) return;
     try {
-      await axios.delete(`http://localhost:3000/api/users/${userId}`, {
+      await axios.delete(`${import.meta.VITE_API_URL}/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchUsers();
@@ -61,8 +61,8 @@ export default function UserTable() {
   const handleToggleBlock = async (user) => {
   try {
     const endpoint = user.isBlocked
-      ? `http://localhost:3000/api/admin/unblock/${user.id}`
-      : `http://localhost:3000/api/admin/block/${user.id}`;
+      ? `${import.meta.VITE_API_URL}/admin/unblock/${user.id}`
+      : `${import.meta.VITE_API_URL}/admin/block/${user.id}`;
 
     await axios.post(endpoint, {}, { headers: { Authorization: `Bearer ${token}` } });
     fetchUsers();

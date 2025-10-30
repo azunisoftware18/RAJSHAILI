@@ -58,7 +58,7 @@
 
       try {
         setLoading(true);
-        await axios.post("http://localhost:3000/api/register", {
+        await axios.post("${import.meta.VITE_API_URL}/register", {
           name,
           email,
           password,
@@ -93,7 +93,7 @@
 
       try {
         setLoading(true);
-        const res = await axios.post("http://localhost:3000/api/login", {
+        const res = await axios.post(`${import.meta.VITE_API_URL}/login`, {
           email,
           password,
         });

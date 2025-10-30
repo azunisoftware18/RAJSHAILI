@@ -54,7 +54,7 @@ const EditModal = ({
   onInputChange,
   onFileChange,
 }) => {
-  const BACKEND_URL = "http://localhost:3000"; // ✅ backend base URL
+  const BACKEND_URL = `${import.meta.VITE_API_URL}`; // ✅ backend base URL
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
@@ -230,8 +230,8 @@ export default function MainSettings() {
   const [editingSection, setEditingSection] = useState(null);
   const [tempSettings, setTempSettings] = useState({});
 
-  const API_URL = "http://localhost:3000/api/settings";
-  const BACKEND_URL = "http://localhost:3000";
+  const API_URL = `${import.meta.VITE_API_URL}/settings`;
+  const BACKEND_URL = `${import.meta.VITE_API_URL}`;
 
   useEffect(() => {
     const fetchSettings = async () => {

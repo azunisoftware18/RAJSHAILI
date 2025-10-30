@@ -10,7 +10,7 @@ function About() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/about-get-all");
+        const res = await axios.get(`${import.meta.VITE_API_URL}/about-get-all`);
         setAboutData(res.data);
       } catch (err) {
         console.error("Error fetching about data:", err);
@@ -22,7 +22,7 @@ function About() {
   }, []);
 
   const getImageUrl = (imageUrl) =>
-    imageUrl ? `http://localhost:3000${imageUrl}` : "";
+    imageUrl ? `${import.meta.VITE_API_URL}/${imageUrl}` : "";
 
   if (loading) {
     return (

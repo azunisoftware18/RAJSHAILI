@@ -4,7 +4,7 @@ import { PlayCircle, X, Youtube, Loader2, Video } from "lucide-react";
 // Import the hook for scroll animations
 import { useInView } from 'react-intersection-observer';
 
-const API = "http://localhost:3000/api";
+const API = "${import.meta.VITE_API_URL}";
 
 // Animated Video Card Component
 const AnimatedVideoCard = ({ video, onClick, index }) => {
