@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Star, X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Star, X } from "lucide-react";
 
-// --- Payment Modal ---
+// ================= Payment Modal =================
 const PaymentModal = ({ course, onClose }) => {
   if (!course) return null;
 
@@ -23,10 +23,9 @@ const PaymentModal = ({ course, onClose }) => {
           Pay for <span className="font-semibold text-yellow-300">{course.name}</span>
         </p>
 
-        {/* QR Code Image */}
         <div className="flex justify-center">
           <img
-            src="/images/payment-qr.png" // 🔹 apna QR image path yah daalna
+            src="/images/payment-qr.png" // 🔹 apna QR image yahan daalo
             alt="Payment QR"
             className="w-56 h-56 rounded-xl border border-yellow-400 shadow-lg"
           />
@@ -48,7 +47,7 @@ const PaymentModal = ({ course, onClose }) => {
   );
 };
 
-// --- Course Detail Modal ---
+// ================= Course Detail Modal =================
 const CourseDetailModal = ({ course, onClose }) => {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
@@ -68,8 +67,8 @@ const CourseDetailModal = ({ course, onClose }) => {
           <div className="grid md:grid-cols-2 gap-8">
             {/* Image */}
             <div className="relative h-full min-h-[300px] md:min-h-full">
-              <img 
-                src={`${import.meta.env.VITE_API_URL}/${course.imageUrl}`} 
+              <img
+                src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/${course.imageUrl}`}
                 alt={course.name}
                 className="w-full h-full object-cover"
               />
@@ -112,13 +111,12 @@ const CourseDetailModal = ({ course, onClose }) => {
         </div>
       </div>
 
-      {/* Payment Modal */}
       {isPaymentOpen && <PaymentModal course={course} onClose={() => setIsPaymentOpen(false)} />}
     </>
   );
 };
 
-// --- Course Card ---
+// ================= Course Card =================
 const CourseCard = ({ course, onClick }) => (
   <div
     className="bg-[#1F3A5A]/50 backdrop-blur-md rounded-2xl overflow-hidden border border-blue-800/50 shadow-lg group hover:shadow-yellow-500/10 hover:border-yellow-500/50 transition-all duration-300 cursor-pointer"
@@ -126,16 +124,18 @@ const CourseCard = ({ course, onClick }) => (
   >
     <div className="overflow-hidden relative">
       <img
-        src={`${import.meta.env.VITE_API_URL}/${course.imageUrl}`}
+        src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/${course.imageUrl}`}
         alt={course.name}
         className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
       />
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/50 to-transparent"></div>
     </div>
     <div className="p-5">
-      {course.isBestseller &&
-        <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">Bestseller</span>
-      }
+      {course.isBestseller && (
+        <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">
+          Bestseller
+        </span>
+      )}
       <h2 className="text-xl font-bold text-white mb-1 truncate">{course.name}</h2>
       <p className="text-gray-400 text-sm mb-3">{course.instructor || "N/A"}</p>
       <div className="flex items-center mb-3">
@@ -144,30 +144,48 @@ const CourseCard = ({ course, onClick }) => (
         <span className="text-gray-500 text-sm ml-2">{course.reviews || "(0)"}</span>
       </div>
       <div className="mb-4">
-        <span className="font-extrabold text-2xl text-white">{course.price ? `₹${course.price}` : "₹0"}</span>{" "}
+        <span className="font-extrabold text-2xl text-white">
+          {course.price ? `₹${course.price}` : "₹0"}
+        </span>{" "}
         <span className="line-through text-gray-500">{course.originalPrice || ""}</span>
       </div>
-      <p className="text-yellow-400 text-sm font-semibold hover:text-yellow-300">View Details...</p>
+      <p className="text-yellow-400 text-sm font-semibold hover:text-yellow-300">
+        View Details...
+      </p>
     </div>
   </div>
 );
 
-// --- Main Page ---
+// ================= Main Courses Page =================
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get("${import.meta.env.VITE_API_URL}/api/courses");
-        setCourses(res.data);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/courses`);
+        // ✅ check if data is array
+        const data = Array.isArray(res.data) ? res.data : res.data.courses || [];
+        setCourses(data);
       } catch (err) {
-        console.error("Failed to fetch courses:", err);
+        console.error("❌ Failed to fetch courses:", err);
+        setCourses([]);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCourses();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#192A41] text-yellow-400 text-xl">
+        Loading Courses...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#192A41] py-10 px-4">
@@ -175,16 +193,25 @@ export default function CoursesPage() {
         <h1 className="text-4xl md:text-5xl font-extrabold text-white">
           Our <span className="text-yellow-400">Astrology Courses</span>
         </h1>
-        <p className="text-gray-400 mt-2 text-lg">Embark on a journey of cosmic discovery.</p>
+        <p className="text-gray-400 mt-2 text-lg">
+          Embark on a journey of cosmic discovery.
+        </p>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        {courses.map(course => (
-          <CourseCard key={course.id} course={course} onClick={setSelectedCourse} />
-        ))}
-      </div>
+      {courses.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {courses.map((course) => (
+            <CourseCard key={course.id} course={course} onClick={setSelectedCourse} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-gray-400 text-lg">No courses available.</div>
+      )}
 
-      <CourseDetailModal course={selectedCourse} onClose={() => setSelectedCourse(null)} />
+      <CourseDetailModal
+        course={selectedCourse}
+        onClose={() => setSelectedCourse(null)}
+      />
     </div>
   );
 }
