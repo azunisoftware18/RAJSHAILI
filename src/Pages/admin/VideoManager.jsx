@@ -3,7 +3,7 @@ import axios from "axios";
 import { Plus, Eye, X, Youtube, Edit, Trash2 } from "lucide-react";
 
 // API URL (The import.meta.env was causing issues. Using the fallback URL directly to ensure compatibility.)
-const API = "${import.meta.env.VITE_API_URL}";
+const API = `${import.meta.env.VITE_API_URL}`;
 
 /**
  * Custom Confirmation Modal Component
