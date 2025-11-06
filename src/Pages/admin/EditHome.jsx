@@ -1,353 +1,169 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Users,
-  Loader2,
-  AlertCircle,
-  Trash2,
-  Search,
-  Mail,
-  Phone,
-  MapPin,
-  User,
-  Download,
-} from "lucide-react";
+import { Loader2, AlertCircle, Trash2, Video } from "lucide-react";
 
-// ✅ Correct API URLs
-const API_GET_URL = `${import.meta.env.VITE_API_URL}/enrollment-list`;
-const API_DELETE_URL = `${import.meta.env.VITE_API_URL}/enrollment-delete`;
+const API_URL = import.meta.env.VITE_API_URL;
+const GET_URL = `${API_URL}/home-list`;
+const DELETE_URL = `${API_URL}/home-delete`;
 
-// ✅ Clean Image URL helper (fixes missing image issues)
-const IMAGE_BASE_URL = import.meta.env.VITE_API_URL.replace("/api", "");
+// Image base URL cleaner
+const IMAGE_BASE_URL = API_URL.replace("/api", "");
 
-// --- Helper to format date ---
-const formatDateTime = (dateString) => {
-  if (!dateString) return "N/A";
-  try {
-    return new Date(dateString).toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  } catch {
-    return "Invalid Date";
-  }
-};
-
-// --- Animation Variants ---
 const sectionVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
-  },
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
-const rowVariants = {
-  hidden: { opacity: 0, x: -50 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
-  },
-  exit: { opacity: 0, x: 50, transition: { duration: 0.3 } },
-};
-
-export default function EnrollmentDashboard() {
-  const [enrollments, setEnrollments] = useState([]);
+export default function HomeDashboard() {
+  const [homes, setHomes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
 
-  // ✅ Fetch Enrollments
+  // Fetch Data
   useEffect(() => {
-    const fetchEnrollments = async () => {
-      setLoading(true);
-      setError(null);
+    const fetchHomes = async () => {
       try {
-        const res = await axios.get(API_GET_URL);
-        const data = Array.isArray(res.data) ? res.data : []; // ✅ ensures e.filter error won’t happen
-        setEnrollments(data);
+        const res = await axios.get(GET_URL);
+        setHomes(res.data || []);
       } catch (err) {
-        console.error("Error fetching enrollments:", err);
-        if (err.message === "Network Error") {
-          setError("Cannot connect to server. Please check backend.");
-        } else if (err.response?.status === 404) {
-          setError("API route not found (/enrollment-list).");
-        } else {
-          setError("Failed to load enrollment data.");
-        }
+        console.error(err);
+        setError("Failed to load home data. Please check the API.");
       } finally {
         setLoading(false);
       }
     };
-
-    fetchEnrollments();
+    fetchHomes();
   }, []);
 
-  // ✅ Delete Handler
+  // Delete Function
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this enrollment?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${API_DELETE_URL}/${id}`, {
+      await axios.delete(`${DELETE_URL}/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setEnrollments((prev) => prev.filter((item) => item.id !== id));
+      setHomes((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
-      console.error("Delete error:", err);
-      alert("Failed to delete enrollment.");
+      console.error(err);
+      alert("Failed to delete item.");
     }
   };
 
-  // ✅ Safe Filtering
-  const filteredEnrollments = useMemo(() => {
-    if (!Array.isArray(enrollments)) return [];
-    return enrollments.filter(
-      (item) =>
-        item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.email?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [enrollments, searchQuery]);
-
-  // ✅ Download CSV
-  const handleDownload = () => {
-    if (!filteredEnrollments.length) {
-      alert("No data to download.");
-      return;
-    }
-
-    const headers = ["ID", "Name", "Email", "Phone", "Address", "Enrolled On"];
-
-    const sanitize = (val) => {
-      let str = String(val || "");
-      str = str.replace(/"/g, '""');
-      if (str.search(/("|,|\n)/g) >= 0) str = `"${str}"`;
-      return str;
-    };
-
-    const rows = filteredEnrollments.map((i) =>
-      [
-        sanitize(i.id),
-        sanitize(i.name),
-        sanitize(i.email),
-        sanitize(i.number),
-        sanitize(i.address),
-        sanitize(formatDateTime(i.createdAt)),
-      ].join(",")
-    );
-
-    const csv =
-      "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
-    const link = document.createElement("a");
-    link.href = encodeURI(csv);
-    link.download = "enrollments.csv";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // ✅ Loading UI
+  // Loading State
   if (loading)
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-8 text-blue-600">
-        <Loader2 className="w-16 h-16 animate-spin" />
-        <span className="ml-4 text-2xl font-semibold text-slate-700">
-          Loading Enrollments...
-        </span>
+      <div className="flex min-h-screen justify-center items-center bg-slate-50 text-blue-600">
+        <Loader2 className="w-10 h-10 animate-spin mr-3" />
+        <p className="text-xl font-semibold">Loading Home Data...</p>
       </div>
     );
 
-  // ✅ Error UI
+  // Error State
   if (error)
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-8">
-        <div className="bg-red-100 border border-red-400 rounded-lg p-8 text-center text-red-700">
-          <AlertCircle className="w-16 h-16 mx-auto mb-4 text-red-600" />
-          <h2 className="text-3xl font-bold text-red-800 mb-2">
+      <div className="flex min-h-screen justify-center items-center bg-slate-50">
+        <div className="text-center bg-red-100 p-6 rounded-xl shadow-md">
+          <AlertCircle className="mx-auto mb-3 text-red-600 w-10 h-10" />
+          <h2 className="text-2xl font-bold text-red-700 mb-2">
             Error Loading Data
           </h2>
-          <p>{error}</p>
+          <p className="text-red-500">{error}</p>
         </div>
       </div>
     );
 
-  // ✅ Main UI
   return (
-    <div className="min-h-screen bg-slate-50 p-4 sm:p-6 md:p-8 text-slate-900">
+    <div className="min-h-screen bg-slate-50 p-6 text-slate-900">
       <motion.div
         className="max-w-7xl mx-auto"
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Header */}
-        <motion.div variants={itemVariants} className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2 flex items-center gap-3">
-            <Users size={40} className="text-blue-600" />
-            Enrollments
-          </h1>
-          <p className="text-lg text-slate-600">
-            View and manage all user enrollments from the hero section form.
-          </p>
-        </motion.div>
-
-        {/* Search & Download */}
-        <motion.div
+        <motion.h1
           variants={itemVariants}
-          className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
+          className="text-4xl font-extrabold mb-8 text-slate-900"
         >
-          <div className="relative w-full max-w-lg">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-              <Search size={20} />
-            </span>
-            <input
-              type="text"
-              placeholder="Search by name or email..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full p-3 pl-12 bg-white border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          🏠 Home Dashboard
+        </motion.h1>
 
-          <button
-            onClick={handleDownload}
-            className="w-full sm:w-auto flex-shrink-0 flex items-center justify-center gap-2 p-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-all duration-300 transform hover:scale-105"
-          >
-            <Download size={18} />
-            Download CSV
-          </button>
-        </motion.div>
+        <AnimatePresence>
+          {homes.length ? (
+            <motion.div
+              variants={itemVariants}
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {homes.map((item) => (
+                <motion.div
+                  key={item.id}
+                  variants={itemVariants}
+                  className="bg-white shadow-md rounded-xl overflow-hidden border border-slate-200 hover:shadow-xl transition-all duration-300"
+                >
+                  {/* Images */}
+                  <div className="grid grid-cols-2 gap-1 p-2">
+                    {[item.card1Image, item.card2Image, item.card3Image, item.card4Image].map(
+                      (img, i) => (
+                        <img
+                          key={i}
+                          src={`${IMAGE_BASE_URL}/${img}`}
+                          alt={`Card ${i + 1}`}
+                          className="w-full h-32 object-cover rounded-lg border border-slate-100"
+                          onError={(e) => (e.target.src = "/no-image.png")}
+                        />
+                      )
+                    )}
+                  </div>
 
-        {/* Table */}
-        <motion.div
-          variants={itemVariants}
-          className="shadow-lg rounded-lg border border-slate-200 overflow-hidden"
-        >
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-100">
-                <tr>
-                  {[
-                    "Name",
-                    "Email",
-                    "Phone",
-                    "Address",
-                    "Enrolled On",
-                    "Actions",
-                  ].map((t) => (
-                    <th
-                      key={t}
-                      className="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider"
+                  {/* Video */}
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Video className="text-blue-600" size={20} />
+                      <a
+                        href={item.videoUrl}
+                        target="_blank"
+                        className="text-blue-500 underline truncate"
+                      >
+                        {item.videoUrl}
+                      </a>
+                    </div>
+                    <p className="text-sm text-slate-500">
+                      Created:{" "}
+                      {new Date(item.createdAt).toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+
+                  {/* Delete Button */}
+                  <div className="flex justify-end border-t border-slate-100 p-3">
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="text-red-600 hover:text-red-800 flex items-center gap-1"
                     >
-                      {t}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-
-              <tbody className="bg-white divide-y divide-slate-200">
-                <AnimatePresence>
-                  {filteredEnrollments.length ? (
-                    filteredEnrollments.map((item) => (
-                      <motion.tr
-                        key={item.id}
-                        variants={rowVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        layout
-                        className="hover:bg-slate-50 transition-colors"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <User
-                              size={16}
-                              className="mr-2 text-blue-600 opacity-70"
-                            />
-                            <span className="text-sm font-medium text-slate-900">
-                              {item.name}
-                            </span>
-                          </div>
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <Mail
-                              size={16}
-                              className="mr-2 text-blue-600 opacity-70"
-                            />
-                            <span className="text-sm text-slate-600">
-                              {item.email}
-                            </span>
-                          </div>
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <Phone
-                              size={16}
-                              className="mr-2 text-blue-600 opacity-70"
-                            />
-                            <span className="text-sm text-slate-600">
-                              {item.number}
-                            </span>
-                          </div>
-                        </td>
-
-                        <td
-                          className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 max-w-xs truncate"
-                          title={item.address}
-                        >
-                          {item.address}
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                          {formatDateTime(item.createdAt)}
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="text-red-600 hover:text-red-800 p-2 rounded-md hover:bg-red-100 transition-colors"
-                            title="Delete Enrollment"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </td>
-                      </motion.tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="6"
-                        className="text-center py-10 text-slate-500"
-                      >
-                        {searchQuery
-                          ? "No enrollments found matching your search."
-                          : "No enrollments found."}
-                      </td>
-                    </tr>
-                  )}
-                </AnimatePresence>
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
+                      <Trash2 size={18} />
+                      Delete
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <p className="text-center text-slate-500 mt-20 text-lg">
+              No Home data found.
+            </p>
+          )}
+        </AnimatePresence>
       </motion.div>
     </div>
   );
