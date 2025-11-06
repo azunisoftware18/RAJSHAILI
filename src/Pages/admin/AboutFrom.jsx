@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Save, UploadCloud, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
-// FIX 1: Hardcode the API URL. 
-// import.meta.env.VITE_API_URL aapke current environment mein kaam nahi kar raha hoga.
-const VITE_API_URL = "https://api.raj-shaili.com/api";
-
 const AboutForm = () => {
   const createFormState = () => ({
     id: '',
@@ -26,59 +22,42 @@ const AboutForm = () => {
   useEffect(() => {
     const fetchAboutData = async () => {
       try {
-        // Use the hardcoded URL
-        const res = await axios.get(`${VITE_API_URL}/about-get-all`);
-        const data = res.data;
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/about-get-all`);
+        const data = res.data.data || res.data || [];
 
-        // FIX 2: Add console.log to see what data is actually coming from the API
-        // Aap browser console (F12) mein check kar sakte hain ki data kaisa dikh raha hai.
-        console.log("Fetched data from API:", data);
+        console.log("About API Response:", data); // Debugging
 
-        if (data && data.length > 0) {
-          
-          // FIX 3: Make string matching case-insensitive for robustness
-          // Ho sakta hai database mein 'Shalini' ki jagah 'shalini' save ho.
-          const tailor = data.find(d => d.title.toLowerCase().includes("r. k. tailor"));
-          const shalini = data.find(d => d.title.toLowerCase().includes("shalini"));
-          const awards = data.find(d => d.title.toLowerCase().includes("awards"));
+        if (data.length > 0) {
+          const tailor = data.find(d => d.title?.toLowerCase().includes("r. k. tailor"));
+          const shalini = data.find(d => d.title?.toLowerCase().includes("shalini"));
+          const awards = data.find(d => d.title?.toLowerCase().includes("awards"));
 
-          console.log("Found Tailor:", tailor);
-          console.log("Found Shalini:", shalini);
-          console.log("Found Awards:", awards);
+          if (tailor) setForm1(prev => ({
+            ...prev,
+            id: tailor.id,
+            title: tailor.title,
+            description: tailor.description,
+            previewImage: tailor.imageUrl,
+          }));
 
-          if (tailor) {
-            setForm1(prev => ({
-              ...prev,
-              id: tailor.id,
-              title: tailor.title,
-              description: tailor.description,
-              previewImage: tailor.imageUrl, // backend se /uploads/path aayega
-            }));
-          }
+          if (shalini) setForm2(prev => ({
+            ...prev,
+            id: shalini.id,
+            title: shalini.title,
+            description: shalini.description,
+            previewImage: shalini.imageUrl,
+          }));
 
-          if (shalini) {
-            setForm2(prev => ({
-              ...prev,
-              id: shalini.id,
-              title: shalini.title,
-              description: shalini.description,
-              previewImage: shalini.imageUrl,
-            }));
-          }
-
-          if (awards) {
-            setForm3(prev => ({
-              ...prev,
-              id: awards.id,
-              title: awards.title,
-              description: awards.description,
-              previewImage: awards.imageUrl,
-            }));
-          }
+          if (awards) setForm3(prev => ({
+            ...prev,
+            id: awards.id,
+            title: awards.title,
+            description: awards.description,
+            previewImage: awards.imageUrl,
+          }));
         }
       } catch (error) {
         console.error("Error fetching about data:", error);
-        // Agar yahaan error aata hai, toh ho sakta hai API URL galat ho ya CORS issue ho.
       }
     };
 
@@ -98,17 +77,15 @@ const AboutForm = () => {
     formData.append('title', form.title);
     formData.append('description', form.description);
 
-    // FIX 4: Only append image if a new one is selected.
-    // Agar koi nayi image file (form.image) hai, tabhi use FormData mein add karo.
-    // Purani image URL (form.previewImage) ko wapas bhejne ki zaroorat nahi hai.
     if (form.image) {
-      formData.append('image', form.image); // new image file
-    } 
-    // Removed: else if (form.previewImage) ...
+      formData.append('image', form.image);
+    } else if (form.previewImage) {
+      formData.append('imageUrl', form.previewImage);
+    }
 
     try {
       const response = await axios.put(
-        `${VITE_API_URL}/about-update/${form.id}`, // Use hardcoded URL
+        `${import.meta.env.VITE_API_URL}/about-update/${form.id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -119,7 +96,7 @@ const AboutForm = () => {
         ...prev,
         isLoading: false,
         isSaved: true,
-        previewImage: updatedData.imageUrl || prev.previewImage,
+        previewImage: updatedData?.imageUrl || prev.previewImage,
         image: null,
       }));
     } catch (error) {
@@ -150,7 +127,7 @@ const AboutForm = () => {
   const renderForm = (form, setForm, sectionTitle) => {
     const fullImageUrl = form.previewImage
       ? form.previewImage.startsWith("/uploads")
-        ? `${VITE_API_URL}${form.previewImage}` // DB se stored image
+        ? `${import.meta.env.VITE_API_URL}${form.previewImage}`
         : form.previewImage
       : null;
 
@@ -185,7 +162,7 @@ const AboutForm = () => {
           {/* Right Column */}
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
-            <div className="mt-1 flex justify-center items-center w-full h-72 border-2 border-gray-300 border-dashed rounded-lg p-6 text-center bg-gray-50 hover:bg-gray-100 transition">
+            <div className="mt-1 flex justify-center items-center w-full h-70 border-2 border-gray-300 border-dashed rounded-lg p-6 text-center bg-gray-50 hover:bg-gray-100 transition">
               {fullImageUrl ? (
                 <img src={fullImageUrl} alt="Preview" className="max-h-full max-w-full object-contain rounded-md" />
               ) : (
