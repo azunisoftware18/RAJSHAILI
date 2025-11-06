@@ -23,38 +23,44 @@ const AboutForm = () => {
     const fetchAboutData = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/about-get-all`);
-        const data = res.data.data || res.data || [];
+        const data = res.data;
 
-        console.log("About API Response:", data); // Debugging
+        if (data && data.length > 0) {
+          const tailor = data.find(d => d.title.includes("R. K. Tailor"));
+          const shalini = data.find(d => d.title.includes("About Raj Shaili"));
+          console.log(shalini);
+          
+          const awards = data.find(d => d.title.includes("Awards"));
 
-        if (data.length > 0) {
-          const tailor = data.find(d => d.title?.toLowerCase().includes("r. k. tailor"));
-          const shalini = data.find(d => d.title?.toLowerCase().includes("shalini"));
-          const awards = data.find(d => d.title?.toLowerCase().includes("awards"));
+          if (tailor) {
+            setForm1(prev => ({
+              ...prev,
+              id: tailor.id,
+              title: tailor.title,
+              description: tailor.description,
+              previewImage: tailor.imageUrl, // backend se /uploads/path aayega
+            }));
+          }
 
-          if (tailor) setForm1(prev => ({
-            ...prev,
-            id: tailor.id,
-            title: tailor.title,
-            description: tailor.description,
-            previewImage: tailor.imageUrl,
-          }));
+          if (shalini) {
+            setForm2(prev => ({
+              ...prev,
+              id: shalini.id,
+              title: shalini.title,
+              description: shalini.description,
+              previewImage: shalini.imageUrl,
+            }));
+          }
 
-          if (shalini) setForm2(prev => ({
-            ...prev,
-            id: shalini.id,
-            title: shalini.title,
-            description: shalini.description,
-            previewImage: shalini.imageUrl,
-          }));
-
-          if (awards) setForm3(prev => ({
-            ...prev,
-            id: awards.id,
-            title: awards.title,
-            description: awards.description,
-            previewImage: awards.imageUrl,
-          }));
+          if (awards) {
+            setForm3(prev => ({
+              ...prev,
+              id: awards.id,
+              title: awards.title,
+              description: awards.description,
+              previewImage: awards.imageUrl,
+            }));
+          }
         }
       } catch (error) {
         console.error("Error fetching about data:", error);
@@ -78,9 +84,9 @@ const AboutForm = () => {
     formData.append('description', form.description);
 
     if (form.image) {
-      formData.append('image', form.image);
+      formData.append('image', form.image); // new image file
     } else if (form.previewImage) {
-      formData.append('imageUrl', form.previewImage);
+      formData.append('imageUrl', form.previewImage); // old image url
     }
 
     try {
@@ -96,7 +102,7 @@ const AboutForm = () => {
         ...prev,
         isLoading: false,
         isSaved: true,
-        previewImage: updatedData?.imageUrl || prev.previewImage,
+        previewImage: updatedData.imageUrl || prev.previewImage,
         image: null,
       }));
     } catch (error) {
@@ -127,7 +133,7 @@ const AboutForm = () => {
   const renderForm = (form, setForm, sectionTitle) => {
     const fullImageUrl = form.previewImage
       ? form.previewImage.startsWith("/uploads")
-        ? `${import.meta.env.VITE_API_URL}${form.previewImage}`
+        ? `${import.meta.env.VITE_API_URL}${form.previewImage}` // DB se stored image
         : form.previewImage
       : null;
 
