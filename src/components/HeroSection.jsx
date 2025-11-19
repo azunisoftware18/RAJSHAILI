@@ -22,7 +22,7 @@ import {
 
 // --- API and Image Base URLs ---
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/home`;
-const IMAGE_BASE_URL = `${import.meta.env.VITE_API_URL}`;
+const IMAGE_BASE_URL = `${import.meta.env.VITE_IMAGE_BASE_URL}`;
 // --- NEW API URL FOR REGISTRATION ---
 const REGISTRATION_API_URL = `${import.meta.env.VITE_API_URL}/enrollment-create`;
 
@@ -346,6 +346,9 @@ export default function HeroSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  console.log(homeData);
+  
+
   useEffect(() => {
     const fetchHomeData = async () => {
       setLoading(true);
@@ -391,10 +394,11 @@ export default function HeroSection() {
     }
     return null;
   };
+  
 
   const videoEmbedUrl = getYouTubeEmbedUrl(homeData?.videoUrl); 
-  const card1ImgSrc = homeData?.card1Image ? `${IMAGE_BASE_URL}${homeData.card1Image}` : "/hero-img/hero.png";
-  const card2ImgSrc = homeData?.card2Image ? `${IMAGE_BASE_URL}${homeData.card2Image}` : "/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png";
+  const card1ImgSrc = homeData?.card1Image ? `${IMAGE_BASE_URL}/${homeData.card1Image}` : "/hero-img/hero.png";
+  const card2ImgSrc = homeData?.card2Image ? `${IMAGE_BASE_URL}/${homeData.card2Image}` : "/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png";
 
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-[#192A41] text-white overflow-hidden py-20">
@@ -454,7 +458,7 @@ export default function HeroSection() {
                     <span className="font-semibold text-center">{error}</span>
                 </div>
             ) : (
-                <GlassImageCard img1={card1ImgSrc} img2={card2ImgSrc} />
+                <GlassImageCard img1={`${card1ImgSrc}`} img2={card2ImgSrc} />
             )}
         </div>
       </div>

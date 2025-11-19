@@ -14,23 +14,19 @@ export default function ContactForm() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.fullName || !formData.email || !formData.phoneNumber) {
-      alert("Please fill in all required fields.");
+    if (!formData.fullName || !formData.email || !formData.phoneNumber || !formData.subject) {
+      alert("Please fill all fields ✨");
       return;
     }
 
     setLoading(true);
     try {
-      // Send form data to backend API
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/message-create`, {
         name: formData.fullName,
         email: formData.email,
@@ -39,19 +35,14 @@ export default function ContactForm() {
       });
 
       if (res.status === 200 || res.status === 201) {
-        alert("Message sent successfully!");
-        setFormData({
-          fullName: "",
-          email: "",
-          phoneNumber: "",
-          subject: "",
-        });
+        alert("✅ Message sent successfully!");
+        setFormData({ fullName: "", email: "", phoneNumber: "", subject: "" });
       } else {
-        alert("Something went wrong. Please try again.");
+        alert("Something went wrong ❌");
       }
-    } catch (error) {
-      console.error("Error while submitting form:", error);
-      alert("Server error. Please try again later.");
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Server error. Please try again later ❗");
     } finally {
       setLoading(false);
     }
@@ -69,17 +60,14 @@ export default function ContactForm() {
         ></div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#192A41] to-transparent"></div>
         <div className="relative z-10">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-2">
-            Get In Touch
-          </h1>
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-2">Get In Touch</h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-2xl">
-            We are here to help and answer any question you might have. We look
-            forward to hearing from you.
+            We are here to help and answer any question you might have.
           </p>
         </div>
       </div>
 
-      {/* Main Content: Form Section */}
+      {/* Contact Form Section */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-24">
         <div className="max-w-2xl mx-auto">
           <div className="bg-[#1F3A5A]/50 backdrop-blur-md rounded-2xl p-8 border border-blue-800/50 shadow-lg">
@@ -87,6 +75,7 @@ export default function ContactForm() {
               Send Us a Message
             </h2>
             <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Full Name */}
               <div className="relative">
                 <input
                   type="text"
@@ -98,6 +87,8 @@ export default function ContactForm() {
                 />
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div>
+
+              {/* Email */}
               <div className="relative">
                 <input
                   type="email"
@@ -109,6 +100,8 @@ export default function ContactForm() {
                 />
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div>
+
+              {/* Phone */}
               <div className="relative">
                 <input
                   type="tel"
@@ -120,17 +113,21 @@ export default function ContactForm() {
                 />
                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div>
+
+              {/* Message */}
               <div className="relative">
                 <textarea
                   name="subject"
                   value={formData.subject}
                   onChange={handleInputChange}
-                  placeholder="Your Message"
+                  placeholder="Your Message*"
                   rows="4"
                   className="w-full bg-blue-900/30 border border-blue-800/50 rounded-lg py-3 px-4 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 />
                 <MessageSquare className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
               </div>
+
+              {/* Submit */}
               <button
                 type="submit"
                 disabled={loading}
