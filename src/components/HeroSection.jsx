@@ -8,7 +8,7 @@ import {
   Loader2,
   Link as LinkIcon,
   PlayCircle,
-  AlertCircle // Added for error display
+  AlertCircle
 } from "lucide-react";
 import axios from "axios";
 import {
@@ -18,14 +18,13 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-// import { Typewriter } from "react-simple-typewriter"; // Removed library
 
-// --- API and Image Base URLs ---
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/home`;
-const IMAGE_BASE_URL = `${import.meta.env.VITE_IMAGE_BASE_URL}`;
-// --- NEW API URL FOR REGISTRATION ---
-const REGISTRATION_API_URL = `${import.meta.env.VITE_API_URL}/enrollment-create`;
+// Environment Variables - FIXED
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || API_BASE_URL;
 
+// Configure axios base URL
+axios.defaults.baseURL = API_BASE_URL;
 
 // 🌈 Custom Animations (CSS)
 const CustomStyles = () => (
@@ -56,7 +55,7 @@ const CustomStyles = () => (
   `}</style>
 );
 
-// --- Custom Typewriter Component (Speed Slowed Down) ---
+// --- Custom Typewriter Component ---
 const CustomTypewriter = () => {
     const words = [
         "Institute of Divine Knowledge",
@@ -68,8 +67,8 @@ const CustomTypewriter = () => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
-        const typeSpeed = 220; // Slowed down typing
-        const deleteSpeed = 120; // Slowed down deleting
+        const typeSpeed = 220;
+        const deleteSpeed = 120;
         const delaySpeed = 2000;
         let currentTimeout;
 
@@ -100,31 +99,33 @@ const CustomTypewriter = () => {
             currentTimeout = setTimeout(handleTyping, speed);
         };
 
-        currentTimeout = setTimeout(handleTyping, typeSpeed); // Start the loop
+        currentTimeout = setTimeout(handleTyping, typeSpeed);
 
         return () => clearTimeout(currentTimeout);
     }, [displayedText, isDeleting, wordIndex]);
 
     return (
-        // Gradient text for dark background
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
             {displayedText}
             <motion.span
                 animate={{ opacity: [0, 1, 0] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
-                className="ml-1 text-purple-400" // Cursor color
+                className="ml-1 text-purple-400"
             >
                 |
             </motion.span>
         </span>
     );
 };
-// --- End of CustomTypewriter ---
 
-
-// 🌟 Registration Modal (Updated HandleSubmit)
+// 🌟 Registration Modal
 const RegistrationModal = ({ onClose }) => {
-  const [formData, setFormData] = useState({ name: "", email: "", number: "", address: "" });
+  const [formData, setFormData] = useState({ 
+    name: "", 
+    email: "", 
+    number: "", 
+    address: "" 
+  });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -139,33 +140,34 @@ const RegistrationModal = ({ onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e) =>
-    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
 
-  // --- UPDATED HANDLESUBMIT ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
+    
     setIsSubmitting(true);
     try {
-      // API URL ko naye URL se update kiya gaya hai
-      const res = await axios.post(REGISTRATION_API_URL, formData);
+      const res = await axios.post('/api/register', formData);
 
       if (res.data.success) {
-          setIsSuccess(true);
+        setIsSuccess(true);
       } else {
-          // Agar API success: false bhejta hai (jaise validation error)
-          alert(res.data.message || "An unknown error occurred.");
+        alert(res.data.message || "An unknown error occurred.");
       }
     } catch (err) {
-      // Server se specific error message (jaise 409 Conflict) dikhaya
       console.error("Submission failed:", err.response?.data || err.message);
       alert(err.response?.data?.message || "Error submitting form. Try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
-  // --- END OF UPDATED HANDLESUBMIT ---
 
   return (
     <div
@@ -187,9 +189,13 @@ const RegistrationModal = ({ onClose }) => {
             Unlock your destiny — begin your journey today.
           </p>
           <img
-            src="hero-img/46992-removebg-preview.png"
+            src="/hero-img/46992-removebg-preview.png"
             alt="Astrology"
             className="w-64 h-64 object-contain z-10"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://placehold.co/256x256/1e293b/94a3b8?text=Astrology";
+            }}
           />
         </div>
 
@@ -225,37 +231,50 @@ const RegistrationModal = ({ onClose }) => {
                 Enter your information to begin your journey.
               </p>
               <form onSubmit={handleSubmit} className="space-y-4">
-                {["name", "email", "number", "address"].map((f) => (
-                  <div key={f}>
+                {[
+                  { key: 'name', label: 'Name', icon: User },
+                  { key: 'email', label: 'Email', icon: Mail },
+                  { key: 'number', label: 'Phone Number', icon: Phone },
+                  { key: 'address', label: 'Address', icon: MapPin }
+                ].map(({ key, label, icon: Icon }) => (
+                  <div key={key}>
                     <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            {f === 'name' && <User size={18} />}
-                            {f === 'email' && <Mail size={18} />}
-                            {f === 'number' && <Phone size={18} />}
-                            {f === 'address' && <MapPin size={18} />}
-                        </span>
-                        <input
-                          name={f}
-                          placeholder={f[0].toUpperCase() + f.slice(1)}
-                          onChange={handleChange}
-                          type={f === 'email' ? 'email' : f === 'number' ? 'tel' : 'text'}
-                          maxLength={f === 'number' ? 10 : undefined}
-                          className={`w-full p-3 pl-10 bg-gray-100 border-2 rounded-lg text-black placeholder:text-gray-500 focus:outline-none focus:bg-white focus:border-purple-500 ${
-                            errors[f] ? "border-red-500" : "border-transparent"
-                          }`}
-                        />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <Icon size={18} />
+                      </span>
+                      <input
+                        name={key}
+                        placeholder={label}
+                        value={formData[key]}
+                        onChange={handleChange}
+                        type={key === 'email' ? 'email' : key === 'number' ? 'tel' : 'text'}
+                        maxLength={key === 'number' ? 10 : undefined}
+                        className={`w-full p-3 pl-10 bg-gray-100 border-2 rounded-lg text-black placeholder:text-gray-500 focus:outline-none focus:bg-white focus:border-purple-500 transition-colors ${
+                          errors[key] ? "border-red-500" : "border-transparent"
+                        }`}
+                      />
                     </div>
-                    {errors[f] && (
-                      <p className="text-red-500 text-xs mt-1">{errors[f]}</p>
+                    {errors[key] && (
+                      <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                        <AlertCircle size={12} />
+                        {errors[key]}
+                      </p>
                     )}
                   </div>
                 ))}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform flex items-center justify-center"
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit & Enroll"}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="animate-spin mr-2" size={20} />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Submit & Enroll"
+                  )}
                 </button>
               </form>
             </>
@@ -289,6 +308,7 @@ const GlassImageCard = ({ img1, img2 }) => {
     x.set(mouseX);
     y.set(mouseY);
   };
+  
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
@@ -321,17 +341,23 @@ const GlassImageCard = ({ img1, img2 }) => {
 
       <motion.img
         src={img1}
-        alt="Left"
+        alt="Card 1"
         style={{ x: img1X, y: img1Y, transform: "translateZ(30px)" }}
         className="absolute -left-10 top-[-10%] w-36 md:w-44 h-auto object-contain rounded-2xl shadow-xl border border-white/20"
-        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/192x256/334155/94a3b8?text=Image+1"; }}
+        onError={(e) => { 
+          e.target.onerror = null; 
+          e.target.src = "https://placehold.co/192x256/334155/94a3b8?text=No+Image"; 
+        }}
       />
       <motion.img
         src={img2}
-        alt="Right"
+        alt="Card 2"
         style={{ x: img2X, y: img2Y, transform: "translateZ(30px)" }}
         className="absolute -right-10 bottom-[-8%] w-36 md:w-44 h-auto object-contain rounded-2xl shadow-xl border border-white/20"
-        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/192x256/334155/94a3b8?text=Image+2"; }}
+        onError={(e) => { 
+          e.target.onerror = null; 
+          e.target.src = "https://placehold.co/192x256/334155/94a3b8?text=No+Image"; 
+        }}
       />
     </motion.div>
   );
@@ -341,64 +367,77 @@ const GlassImageCard = ({ img1, img2 }) => {
 export default function HeroSection() {
   const [openVideo, setOpenVideo] = useState(false);
   const [openForm, setOpenForm] = useState(false);
-
   const [homeData, setHomeData] = useState(null); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log(homeData);
-  
-
+  // ✅ FETCH DATA FROM BACKEND - FIXED
   useEffect(() => {
     const fetchHomeData = async () => {
-      setLoading(true);
-      setError(null);
       try {
-        const res = await axios.get(API_BASE_URL);
-        if (res.data && res.data.length > 0) {
-          setHomeData(res.data[0]);
+        setLoading(true);
+        setError(null);
+        
+        // Try different endpoints based on your backend setup
+        const endpoints = ['/api/home', '/home'];
+        let response = null;
+        
+        for (const endpoint of endpoints) {
+          try {
+            response = await axios.get(endpoint);
+            if (response.data) break;
+          } catch (err) {
+            console.log(`Tried ${endpoint}, failed:`, err.message);
+          }
+        }
+
+        if (response && response.data) {
+          setHomeData(response.data);
+          console.log("Home data loaded:", response.data);
         } else {
-          setError("No content found.");
+          throw new Error("No data received from server");
         }
       } catch (err) {
-        console.error("Error fetching home data:", err);
-        if (err.message === "Network Error") {
-             setError("Cannot connect to server. Is it running?");
-        } else {
-             setError("Failed to load content.");
-        }
+        console.error("Failed to fetch home data", err);
+        setError("Unable to load content. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-    fetchHomeData();
 
-    const timer = setTimeout(() => setOpenForm(true), 2000);
-    return () => clearTimeout(timer);
+    fetchHomeData();
   }, []);
 
+  // Helper to parse YouTube URL
   const getYouTubeEmbedUrl = (url) => {
     if (!url) return null;
     let videoId = null;
     try {
-        if (url.includes("youtube.com/watch?v=")) {
-            videoId = new URL(url).searchParams.get("v");
-        } else if (url.includes("youtu.be/")) {
-            videoId = new URL(url).pathname.split('/')[1]?.split(/[?&]/)[0];
-        }
-        if (videoId) {
-            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-        }
+      if (url.includes("youtube.com/watch?v=")) {
+        videoId = new URL(url).searchParams.get("v");
+      } else if (url.includes("youtu.be/")) {
+        videoId = new URL(url).pathname.split('/')[1]?.split(/[?&]/)[0];
+      }
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      }
     } catch (e) {
-        console.error("Error parsing video URL:", url, e);
+      console.error("Error parsing video URL:", url, e);
     }
     return null;
   };
-  
 
-  const videoEmbedUrl = getYouTubeEmbedUrl(homeData?.videoUrl); 
-  const card1ImgSrc = homeData?.card1Image ? `${IMAGE_BASE_URL}/${homeData.card1Image}` : "/hero-img/hero.png";
-  const card2ImgSrc = homeData?.card2Image ? `${IMAGE_BASE_URL}/${homeData.card2Image}` : "/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png";
+  // ✅ Prepare Data variables - FIXED
+  const videoEmbedUrl = getYouTubeEmbedUrl(homeData?.videoUrl);
+  
+  // Construct full Image URLs (Backend returns relative path 'uploads/home/...')
+  const card1ImgSrc = homeData?.card1Image 
+    ? `${IMAGE_BASE_URL}/${homeData.card1Image}` 
+    : "/hero-img/hero.png";
+
+  const card2ImgSrc = homeData?.card2Image 
+    ? `${IMAGE_BASE_URL}/${homeData.card2Image}` 
+    : "/hero-img/Gemini_Generated_Image_v7qse5v7qse5v7qs-removebg-preview (1).png";
 
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-[#192A41] text-white overflow-hidden py-20">
@@ -429,37 +468,41 @@ export default function HeroSection() {
             to empower you with clarity, peace & purpose.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6">
-            <a
-              href="/courses"
+            <button
+              onClick={() => setOpenForm(true)}
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all"
             >
-              Explore Our Courses
-            </a>
+              Enroll Now
+            </button>
+            
+            {/* Only show Watch Intro button if Video URL exists */}
             {videoEmbedUrl && (
-                <button
-                    onClick={() => setOpenVideo(true)}
-                    className="flex items-center text-slate-200 font-semibold hover:text-white transition-colors group"
-                >
-                    <PlayCircle className="mr-2 h-8 w-8 text-slate-400 group-hover:text-cyan-400" />
-                    Watch Intro
-                </button>
+              <button
+                onClick={() => setOpenVideo(true)}
+                className="flex items-center text-slate-200 font-semibold hover:text-white transition-colors group"
+              >
+                <PlayCircle className="mr-2 h-8 w-8 text-slate-400 group-hover:text-cyan-400" />
+                Watch Intro
+              </button>
             )}
           </div>
         </div>
 
         <div className="w-full lg:w-1/2 flex justify-center items-center mt-16 lg:mt-0" style={{ perspective: '1000px' }}>
-            {loading ? (
-                <div className="flex items-center justify-center h-[400px] text-cyan-400">
-                    <Loader2 className="animate-spin" size={48} />
-                </div>
-            ) : error ? (
-                <div className="flex flex-col items-center justify-center h-[400px] text-red-400 p-6 bg-red-900/30 rounded-2xl border border-red-700">
-                    <AlertCircle className="w-12 h-12 mb-3"/>
-                    <span className="font-semibold text-center">{error}</span>
-                </div>
-            ) : (
-                <GlassImageCard img1={`${card1ImgSrc}`} img2={card2ImgSrc} />
-            )}
+          {loading ? (
+            <div className="flex items-center justify-center h-[400px] text-cyan-400">
+              <Loader2 className="animate-spin" size={48} />
+              <span className="ml-3">Loading content...</span>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center h-[400px] text-red-400 p-6 bg-red-900/30 rounded-2xl border border-red-700">
+              <AlertCircle className="w-12 h-12 mb-3"/>
+              <span className="font-semibold text-center">{error}</span>
+            </div>
+          ) : (
+            // Passing the fetched Image URLs here
+            <GlassImageCard img1={card1ImgSrc} img2={card2ImgSrc} />
+          )}
         </div>
       </div>
 
@@ -482,7 +525,7 @@ export default function HeroSection() {
             >
               <iframe
                 className="w-full h-full"
-                src={videoEmbedUrl} // Use the dynamic URL
+                src={videoEmbedUrl}
                 title="YouTube player"
                 frameBorder="0"
                 allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -500,4 +543,3 @@ export default function HeroSection() {
     </section>
   );
 }
-

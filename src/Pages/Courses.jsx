@@ -2,6 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Star, X } from "lucide-react";
 
+// --- FIXED API DEFINITION ---
+// Environment Variables for robust access and fallback
+const API_URL = (typeof import.meta !== 'undefined' ? import.meta.env.VITE_API_URL : undefined) || "http://localhost:5000/api";
+const IMAGE_BASE_URL = (typeof import.meta !== 'undefined' ? import.meta.env.VITE_IMAGE_BASE_URL : undefined) || "http://localhost:5000";
+// ----------------------------
+
+// Set axios base URL globally
+// This is the BASE URL for all API calls (e.g., http://localhost:5000/api)
+axios.defaults.baseURL = API_URL;
+
 // ================= Payment Modal =================
 const PaymentModal = ({ course, onClose }) => {
   if (!course) return null;
@@ -25,9 +35,10 @@ const PaymentModal = ({ course, onClose }) => {
 
         <div className="flex justify-center">
           <img
-            src="/images/payment-qr.png" // 🔹 apna QR image yahan daalo
+            src="/images/payment-qr.png"
             alt="Payment QR"
             className="w-56 h-56 rounded-xl border border-yellow-400 shadow-lg"
+            onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/224x224/fcd34d/1f2937?text=QR+Code"; }}
           />
         </div>
 
@@ -53,6 +64,15 @@ const CourseDetailModal = ({ course, onClose }) => {
 
   if (!course) return null;
 
+  // Get course data with fallbacks
+  const courseName = course.name || course.title || "Untitled Course";
+  const coursePrice = course.price || 0;
+  const courseDescription = course.description || "No description available.";
+  const courseInstructor = course.instructor || "N/A";
+  const courseRating = course.rating || "4.5";
+  const courseOriginalPrice = course.originalPrice || "";
+  const courseKeyFeatures = course.keyFeatures || [];
+
   return (
     <>
       <div className="fixed inset-0 z-40 bg-[#192A41]/95 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
@@ -68,43 +88,52 @@ const CourseDetailModal = ({ course, onClose }) => {
             {/* Image */}
             <div className="relative h-full min-h-[300px] md:min-h-full">
               <img
-                src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/${course.imageUrl}`}
-                alt={course.name}
+                src={getImageUrl(course)}
+                alt={courseName}
                 className="w-full h-full object-cover"
+                onError={(e) => { 
+                  e.target.onerror = null; 
+                  e.target.src = "https://placehold.co/600x400/1F3A5A/FFFFFF?text=Course+Image"; 
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
             </div>
 
             {/* Details */}
             <div className="p-6 md:p-10 text-white">
-              <h1 className="text-4xl font-extrabold text-yellow-400 mb-2">{course.name}</h1>
-              <p className="text-gray-400 text-lg mb-4">Instructor: {course.instructor || "N/A"}</p>
+              <h1 className="text-4xl font-extrabold text-yellow-400 mb-2">{courseName}</h1>
+              <p className="text-gray-400 text-lg mb-4">Instructor: {courseInstructor}</p>
 
               <div className="flex items-center mb-6">
-                <span className="font-bold text-2xl text-yellow-400">{course.rating || "4.5"}</span>
+                <span className="font-bold text-2xl text-yellow-400">{courseRating}</span>
                 <Star className="w-6 h-6 text-yellow-400 ml-2" fill="currentColor" />
-                <span className="text-gray-500 text-md ml-3">{course.reviews || "(0) Students"}</span>
               </div>
 
               <div className="mb-8 p-4 bg-blue-800/30 rounded-lg">
-                <span className="font-extrabold text-4xl text-white mr-4">{course.price ? `₹${course.price}` : "₹0"}</span>
-                <span className="line-through text-gray-400 text-xl">{course.originalPrice || ""}</span>
+                <span className="font-extrabold text-4xl text-white mr-4">₹{coursePrice}</span>
+                {courseOriginalPrice && (
+                  <span className="line-through text-gray-400 text-xl">₹{courseOriginalPrice}</span>
+                )}
               </div>
 
-              <p className="text-gray-300 mb-6">{course.description}</p>
+              <p className="text-gray-300 mb-6">{courseDescription}</p>
 
-              <h2 className="text-xl font-bold text-white mb-3">What You'll Learn:</h2>
-              <ul className="list-disc list-inside space-y-1 text-gray-300 mb-8 ml-4">
-                {course.keyFeatures?.map((feature, index) => (
-                  <li key={index}>{feature}</li>
-                ))}
-              </ul>
+              {courseKeyFeatures.length > 0 && (
+                <>
+                  <h2 className="text-xl font-bold text-white mb-3">What You'll Learn:</h2>
+                  <ul className="list-disc list-inside space-y-1 text-gray-300 mb-8 ml-4">
+                    {courseKeyFeatures.map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
 
               <button
                 onClick={() => setIsPaymentOpen(true)}
                 className="w-full bg-yellow-400 text-gray-900 font-bold py-3 text-xl rounded-lg hover:bg-yellow-300 transition-all duration-300 shadow-xl"
               >
-                Enroll Now - {course.price ? `₹${course.price}` : "₹0"}
+                Enroll Now - ₹{coursePrice}
               </button>
             </div>
           </div>
@@ -117,44 +146,83 @@ const CourseDetailModal = ({ course, onClose }) => {
 };
 
 // ================= Course Card =================
-const CourseCard = ({ course, onClick }) => (
-  <div
-    className="bg-[#1F3A5A]/50 backdrop-blur-md rounded-2xl overflow-hidden border border-blue-800/50 shadow-lg group hover:shadow-yellow-500/10 hover:border-yellow-500/50 transition-all duration-300 cursor-pointer"
-    onClick={() => onClick(course)}
-  >
-    <div className="overflow-hidden relative">
-      <img
-        src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/${course.imageUrl}`}
-        alt={course.name}
-        className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-      />
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/50 to-transparent"></div>
-    </div>
-    <div className="p-5">
-      {course.isBestseller && (
-        <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">
-          Bestseller
-        </span>
-      )}
-      <h2 className="text-xl font-bold text-white mb-1 truncate">{course.name}</h2>
-      <p className="text-gray-400 text-sm mb-3">{course.instructor || "N/A"}</p>
-      <div className="flex items-center mb-3">
-        <span className="font-bold text-yellow-400">{course.rating || "4.5"}</span>
-        <Star className="w-4 h-4 text-yellow-400 ml-1" fill="currentColor" />
-        <span className="text-gray-500 text-sm ml-2">{course.reviews || "(0)"}</span>
+const CourseCard = ({ course, onClick }) => {
+  // Get course data with fallbacks
+  const courseName = course.name || course.title || "Untitled Course";
+  const coursePrice = course.price || 0;
+  const courseInstructor = course.instructor || "N/A";
+  const courseRating = course.rating || "4.5";
+  const courseOriginalPrice = course.originalPrice || "";
+  const isBestseller = course.isBestseller || false;
+
+  return (
+    <div
+      className="bg-[#1F3A5A]/50 backdrop-blur-md rounded-2xl overflow-hidden border border-blue-800/50 shadow-lg group hover:shadow-yellow-500/10 hover:border-yellow-500/50 transition-all duration-300 cursor-pointer"
+      onClick={() => onClick(course)}
+    >
+      <div className="overflow-hidden relative">
+        <img
+          src={getImageUrl(course)}
+          alt={courseName}
+          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+          onError={(e) => { 
+            e.target.onerror = null; 
+            e.target.src = "https://placehold.co/600x400/1F3A5A/FFFFFF?text=Course+Image"; 
+          }}
+        />
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/50 to-transparent"></div>
       </div>
-      <div className="mb-4">
-        <span className="font-extrabold text-2xl text-white">
-          {course.price ? `₹${course.price}` : "₹0"}
-        </span>{" "}
-        <span className="line-through text-gray-500">{course.originalPrice || ""}</span>
+      <div className="p-5">
+        {isBestseller && (
+          <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">
+            Bestseller
+          </span>
+        )}
+        <h2 className="text-xl font-bold text-white mb-1 truncate">{courseName}</h2>
+        <p className="text-gray-400 text-sm mb-3">{courseInstructor}</p>
+        <div className="flex items-center mb-3">
+          <span className="font-bold text-yellow-400">{courseRating}</span>
+          <Star className="w-4 h-4 text-yellow-400 ml-1" fill="currentColor" />
+        </div>
+        <div className="mb-4">
+          <span className="font-extrabold text-2xl text-white">
+            ₹{coursePrice}
+          </span>{" "}
+          {courseOriginalPrice && (
+            <span className="line-through text-gray-500">₹{courseOriginalPrice}</span>
+          )}
+        </div>
+        <p className="text-yellow-400 text-sm font-semibold hover:text-yellow-300">
+          View Details...
+        </p>
       </div>
-      <p className="text-yellow-400 text-sm font-semibold hover:text-yellow-300">
-        View Details...
-      </p>
     </div>
-  </div>
-);
+  );
+};
+
+// ================= Image URL Helper Function =================
+const getImageUrl = (course) => {
+  if (!course) return "https://placehold.co/600x400/1F3A5A/FFFFFF?text=Course+Image";
+  
+  // Try different possible image field names
+  const imagePath = course.imageUrl || course.image || course.imagePath || course.thumbnail;
+  
+  if (!imagePath) {
+    return "https://placehold.co/600x400/1F3A5A/FFFFFF?text=Course+Image";
+  }
+  
+  // If it's already a full URL, return it
+  if (imagePath.startsWith('http')) {
+    return imagePath;
+  }
+  
+  // If it starts with /, remove the leading slash
+  const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  
+  // Construct the full URL
+  return `${IMAGE_BASE_URL}/${cleanPath}`;
+};
+
 
 // ================= Main Courses Page =================
 export default function CoursesPage() {
@@ -165,12 +233,37 @@ export default function CoursesPage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/courses`);
-        // ✅ check if data is array
-        const data = Array.isArray(res.data) ? res.data : res.data.courses || [];
-        setCourses(data);
+        console.log("🔄 Fetching courses from:", `${API_URL}/courses`);
+        const res = await axios.get('/courses');
+        console.log("✅ Courses API Response:", res.data);
+        
+        // Handle different response structures
+        let coursesData = [];
+        
+        if (Array.isArray(res.data)) {
+          coursesData = res.data;
+        } else if (Array.isArray(res.data?.data)) {
+          coursesData = res.data.data;
+        } else if (Array.isArray(res.data?.courses)) {
+          coursesData = res.data.courses;
+        } else if (res.data?.data && typeof res.data.data === 'object') {
+          coursesData = Object.values(res.data.data);
+        } else {
+          coursesData = [];
+        }
+        
+        console.log("✅ Processed courses data:", coursesData);
+        
+        // Log first course details for debugging
+        if (coursesData.length > 0) {
+          console.log("🔍 First course details:", coursesData[0]);
+          console.log("🖼️ First course image URL:", getImageUrl(coursesData[0]));
+        }
+        
+        setCourses(coursesData);
       } catch (err) {
         console.error("❌ Failed to fetch courses:", err);
+        console.error("❌ Error details:", err.response?.data);
         setCourses([]);
       } finally {
         setLoading(false);
@@ -200,12 +293,14 @@ export default function CoursesPage() {
 
       {courses.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {courses.map((course) => (
-            <CourseCard key={course.id} course={course} onClick={setSelectedCourse} />
+          {courses.map((course, index) => (
+            <CourseCard key={course.id || course._id || index} course={course} onClick={setSelectedCourse} />
           ))}
         </div>
       ) : (
-        <div className="text-center text-gray-400 text-lg">No courses available.</div>
+        <div className="text-center text-gray-400 text-lg">
+          No courses available. Check the console for errors.
+        </div>
       )}
 
       <CourseDetailModal

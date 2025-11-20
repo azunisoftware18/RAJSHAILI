@@ -4,7 +4,11 @@ import { PlayCircle, X, Youtube, Loader2, Video } from "lucide-react";
 // Import the hook for scroll animations
 import { useInView } from 'react-intersection-observer';
 
-const API = `${import.meta.env.VITE_API_URL}`;
+// --- FIXED API DEFINITION ---
+// Environment Variables for robust access
+const API_BASE_URL = (typeof import.meta !== 'undefined' ? import.meta.env.VITE_API_URL : undefined) || "http://localhost:5000/api";
+const VIDEO_ENDPOINT = `${API_BASE_URL}/videos`; // Correct, full endpoint for video list
+// ----------------------------
 
 // Animated Video Card Component
 const AnimatedVideoCard = ({ video, onClick, index }) => {
@@ -76,24 +80,26 @@ export default function VideoManager() {
     fetchVideos();
   }, []);
 
-const fetchVideos = async () => {
-  setLoading(true);
-  setError("");
-  try {
-    const res = await axios.get(`${API}/videos`);
-    console.log("Fetched data:", res.data); // 👈 यह लाइन जोड़ो
-  setVideoList(res?.data?.videos || []);
-  } catch (err) {
-    console.error("Failed to fetch videos:", err);
-    if (err.message === "Network Error") {
-      setError("Failed to connect to the server. Please ensure the backend is running.");
-    } else {
-      setError("Could not load videos. Please try refreshing the page.");
+  const fetchVideos = async () => {
+    setLoading(true);
+    setError("");
+    try {
+        // --- FIXED: Using the full, correct endpoint directly ---
+      const res = await axios.get(VIDEO_ENDPOINT); 
+      console.log("Fetched data:", res.data);
+      // Assuming API returns { videos: [...] } or just [...]
+      setVideoList(res?.data?.videos || res.data || []);
+    } catch (err) {
+      console.error("Failed to fetch videos:", err);
+      if (err.message === "Network Error") {
+        setError("Failed to connect to the server. Please ensure the backend is running.");
+      } else {
+        setError("Could not load videos. Please try refreshing the page.");
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
   const getEmbedUrl = (url, autoplay = false) => {
@@ -113,7 +119,7 @@ const fetchVideos = async () => {
           <Youtube size={48} className="text-red-500" /> Our Video Library
         </h1>
 
-         {/* Display Error Message */}
+        {/* Display Error Message */}
         {error && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-8 rounded-md shadow-sm" role="alert">
                 <p className="font-bold">Error</p>
@@ -136,21 +142,21 @@ const fetchVideos = async () => {
         ) : !error && ( // Only render list if no error
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
            {Array.isArray(videoList) && videoList.length > 0 ? (
-  videoList.map((video, index) => (
-    <AnimatedVideoCard
-      key={video.id}
-      video={video}
-      onClick={setViewVideo}
-      index={index}
-    />
-  ))
-) : (
-  <div className="flex flex-col items-center justify-center h-64 text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-300 p-8">
-    <Video size={64} className="mb-4 text-slate-400" />
-    <p className="text-xl font-medium">No videos found yet.</p>
-    <p className="text-md">Check back soon for new content!</p>
-  </div>
-)}
+              videoList.map((video, index) => (
+                <AnimatedVideoCard
+                  key={video.id}
+                  video={video}
+                  onClick={setViewVideo}
+                  index={index}
+                />
+              ))
+           ) : (
+             <div className="flex flex-col items-center justify-center h-64 text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-300 p-8">
+               <Video size={64} className="mb-4 text-slate-400" />
+               <p className="text-xl font-medium">No videos found yet.</p>
+               <p className="text-md">Check back soon for new content!</p>
+             </div>
+           )}
 
           </div>
         )}
@@ -227,4 +233,3 @@ const fetchVideos = async () => {
     </div>
   );
 }
-

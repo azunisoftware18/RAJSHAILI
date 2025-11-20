@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react"; // Added useState and useEffect
-import axios from "axios"; // Added axios
-import { CheckCircle, Loader2, AlertCircle, BookOpen } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 
-// --- API URLs ---
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/home`;
-const IMAGE_BASE_URL = `${import.meta.env.VITE_API_URL}`;
+// Environment Variables - Fixed for robust access
+const API_BASE_URL = (typeof import.meta !== 'undefined' ? import.meta.env.VITE_API_URL : undefined) || "http://localhost:5000";
+const IMAGE_BASE_URL = (typeof import.meta !== 'undefined' ? import.meta.env.VITE_IMAGE_BASE_URL : undefined) || API_BASE_URL;
 
 // Data remains the same
 const ContentDataList = [
@@ -18,7 +18,6 @@ const ContentDataList = [
 
 // Reusable Placeholder Component
 const ImagePlaceholder = ({ text = "Loading Image...", error = false }) => (
-    // Adjusted styling for the new layout
     <div className={`w-full h-full flex items-center justify-center rounded-2xl ${error ? 'bg-red-100 text-red-600' : 'bg-slate-200 text-slate-500'}`}>
         {error ? (
             <div className="text-center p-4">
@@ -36,36 +35,35 @@ const ImagePlaceholder = ({ text = "Loading Image...", error = false }) => (
 
 // New Topic Card Component
 const TopicCard = ({ topic }) => (
-    <div className="flex items-center p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300 transform hover:scale-[1.03]">
+    <div className="flex items-center p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-600 transition-all duration-300 transform hover:scale-[1.03]">
         <CheckCircle className="h-6 w-6 text-blue-600 mr-4 flex-shrink-0" />
         <span className="text-base text-slate-700 font-medium">{topic}</span>
     </div>
 );
 
-
-export default function TopicsSection() { // Removed props
-    // --- Added State for API data ---
+export default function TopicsSection() {
+    // State for API data
     const [topicsImage, setTopicsImage] = useState(null);
     const [loadingImages, setLoadingImages] = useState(true);
     const [fetchError, setFetchError] = useState(null);
 
-    // --- Added useEffect to fetch data on mount ---
+    // Fetch data on mount
     useEffect(() => {
         const fetchTopicsData = async () => {
             setLoadingImages(true);
             setFetchError(null);
             try {
-                const res = await axios.get(API_BASE_URL);
-                if (res.data && res.data.length > 0) {
-                    const latestData = res.data[0]; // Get the latest entry
-                    // Use card1Image as requested
-                    if (latestData.card1Image) {
-                        setTopicsImage(`${IMAGE_BASE_URL}${latestData.card3Image}`);
+                const res = await axios.get(`${API_BASE_URL}/home`);
+                
+                if (res.data) {
+                    // ✅ MODIFIED: Now fetching card3Image
+                    if (res.data.card3Image) {
+                        setTopicsImage(`${IMAGE_BASE_URL}/${res.data.card3Image}`);
                     } else {
-                        setFetchError("Image 1 (card1Image) not found in the database.");
+                        setFetchError("Image for card 3 not found in the database.");
                     }
                 } else {
-                    setFetchError("No home data found from API.");
+                    setFetchError("No data found from API.");
                 }
             } catch (err) {
                 console.error("Failed to fetch topics data:", err);
@@ -80,37 +78,38 @@ export default function TopicsSection() { // Removed props
         };
 
         fetchTopicsData();
-    }, []); // Empty array ensures this runs only once
+    }, []);
 
     return (
-        // Changed background, added padding
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-blue-50">
             <div className="max-w-6xl mx-auto">
                  {/* Section Title */}
                  <div className="text-center mb-16">
                      <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">
-                        What's Inside the Curriculum?
-                    </h2>
+                         What's Inside the Curriculum?
+                     </h2>
                      <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                        Dive deep into the core concepts bridging ancient wisdom and modern applications.
+                         Dive deep into the core concepts bridging ancient wisdom and modern applications.
                      </p>
                  </div>
 
                  {/* Image Container - Centered, Rounded */}
                 <div className="w-full max-w-4xl mx-auto h-72 md:h-96 mb-16 rounded-2xl shadow-xl overflow-hidden border-4 border-white">
-                    {loadingImages
-                        ? <ImagePlaceholder />
-                        : fetchError
-                        ? <ImagePlaceholder text={fetchError} error={true} />
-                        : (
-                            <img
-                                // Use state variable for the image source
-                                src={topicsImage} 
-                                alt="Rajshaili curriculum visual"
-                                className="w-full h-full object-cover"
-                                onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/1000x500/cccccc/666666?text=Load+Error"; }}
-                            />
-                        )}
+                    {loadingImages ? (
+                        <ImagePlaceholder />
+                    ) : fetchError ? (
+                        <ImagePlaceholder text={fetchError} error={true} />
+                    ) : (
+                        <img
+                            src={topicsImage} 
+                            alt="Rajshaili curriculum visual"
+                            className="w-full h-full object-cover"
+                            onError={(e) => { 
+                                e.target.onerror = null; 
+                                e.target.src = "https://placehold.co/1000x500/cccccc/666666?text=Load+Error"; 
+                            }}
+                        />
+                    )}
                 </div>
 
                 {/* Topics Grid using TopicCard */}
@@ -123,4 +122,3 @@ export default function TopicsSection() { // Removed props
         </section>
     );
 }
-

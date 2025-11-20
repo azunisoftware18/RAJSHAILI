@@ -3,9 +3,9 @@ import axios from 'axios'; // Added axios
 import { Loader2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// --- API URLs ---
-const API_BASE_URL = "${import.meta.env.VITE_API_URL}/home";
-const IMAGE_BASE_URL = "${import.meta.env.VITE_API_URL}";
+// Environment Variables - FIXED: Correct variable names and robust access
+const API_BASE_URL = (typeof import.meta !== 'undefined' ? import.meta.env.VITE_API_URL : undefined) || "http://localhost:5000/api";
+const IMAGE_BASE_URL = (typeof import.meta !== 'undefined' ? import.meta.env.VITE_IMAGE_BASE_URL : undefined) || "http://localhost:5000";
 
 // Data remains the same
 const steps = [
@@ -36,31 +36,31 @@ const ImagePlaceholder = ({ text = "Loading Image...", error = false }) => (
 
 // Animation variants for the container and list items
 const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1, // Stagger animation of children (steps)
-       delayChildren: 0.2, // Delay before children start animating
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1, // Stagger animation of children (steps)
+            delayChildren: 0.2, // Delay before children start animating
+        }
     }
-  }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -30 }, // Start slightly to the left and invisible
-  visible: {
-    opacity: 1,
-    x: 0, // Move to original position
-    transition: {
-      type: "spring", // Use spring physics for a bouncier effect
-      stiffness: 100,
-      damping: 12
+    hidden: { opacity: 0, x: -30 }, // Start slightly to the left and invisible
+    visible: {
+        opacity: 1,
+        x: 0, // Move to original position
+        transition: {
+            type: "spring", // Use spring physics for a bouncier effect
+            stiffness: 100,
+            damping: 12
+        }
     }
-  }
 };
 
 
-export default function GetStartedSection() { // Removed props
+export default function GetStartedSection() {
     // --- Added State for API data ---
     const [getStartedImage, setGetStartedImage] = useState(null);
     const [loadingImages, setLoadingImages] = useState(true);
@@ -72,12 +72,14 @@ export default function GetStartedSection() { // Removed props
             setLoadingImages(true);
             setFetchError(null);
             try {
-                const res = await axios.get(API_BASE_URL);
-                if (res.data && res.data.length > 0) {
-                    const latestData = res.data[0];
-                    // Using card4Image as requested for this section
-                    if (latestData.card4Image) {
-                        setGetStartedImage(`${IMAGE_BASE_URL}${latestData.card4Image}`);
+                // Fetching the single home data object
+                const res = await axios.get(`${API_BASE_URL}/home`);
+                
+                if (res.data) { // Backend returns a single object directly
+                    // ✅ Using card4Image as requested for this section
+                    if (res.data.card4Image) {
+                        // Construct the full image URL
+                        setGetStartedImage(`${IMAGE_BASE_URL}/${res.data.card4Image}`);
                     } else {
                         setFetchError("Image 4 (card4Image) not found.");
                     }
@@ -87,10 +89,10 @@ export default function GetStartedSection() { // Removed props
             } catch (err) {
                 console.error("Failed to fetch Get Started data:", err);
                  if (err.message === "Network Error") {
-                    setFetchError("Cannot connect to server.");
-                } else {
+                    setFetchError("Cannot connect to server. Is the API running?");
+                 } else {
                     setFetchError("Failed to load image.");
-                }
+                 }
             } finally {
                 setLoadingImages(false);
             }
@@ -130,7 +132,7 @@ export default function GetStartedSection() { // Removed props
                         : (
                             <img
                                 src={getStartedImage} // Use state variable
-                                alt="Dr. Vaishali Gupta inspiring action"
+                                alt="Get Started Visual"
                                 className="w-full h-full object-cover"
                                 onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/600x600/cccccc/666666?text=Load+Error"; }}
                             />
@@ -150,32 +152,32 @@ export default function GetStartedSection() { // Removed props
                         whileInView="visible" // Animate steps when container is in view
                         viewport={{ once: true, amount: 0.2 }} // Trigger animation for steps
                      >
-                        {steps.map((step, index) => { // Changed to curly brace
+                        {steps.map((step, index) => {
                              // Use explicit return
                              return (
-                                <motion.div
-                                    key={index} // key prop is necessary here
-                                    variants={itemVariants} // Use item variants for animation
-                                    className={`
-                                        flex flex-col sm:flex-row justify-between items-center p-4 rounded-xl border-2 transition-all duration-300 ease-in-out
-                                        ${step.isActive
-                                            ? "border-transparent bg-gradient-to-r from-[#2c4871] to-[#1e3a5f] text-white shadow-lg scale-[1.03] lg:scale-[1.05]" // Slightly larger scale on active
-                                            : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:shadow-md hover:scale-[1.02]" // Enhanced hover
-                                        }
-                                    `}
-                                >
-                                    <div className="flex items-center w-full sm:w-auto mb-2 sm:mb-0">
-                                        <span className={`text-xl font-bold mr-4 ml-1 w-8 text-center flex-shrink-0 ${step.isActive ? "text-yellow-300" : "text-[#2c4871]"}`}>
-                                            {index < 9 ? `0${index + 1}` : index + 1}
-                                        </span>
-                                        <span className="text-lg font-medium">{step.text}</span>
-                                    </div>
-                                    {step.isActive && (
-                                        <button className="bg-white text-[#2c4871] font-bold py-2 px-6 rounded-lg shadow-md transition-transform duration-200 hover:scale-105 text-sm w-full sm:w-auto mt-2 sm:mt-0">
-                                            {step.buttonText}
-                                        </button>
-                                    )}
-                                </motion.div>
+                                 <motion.div
+                                     key={index} // key prop is necessary here
+                                     variants={itemVariants} // Use item variants for animation
+                                     className={`
+                                         flex flex-col sm:flex-row justify-between items-center p-4 rounded-xl border-2 transition-all duration-300 ease-in-out
+                                         ${step.isActive
+                                             ? "border-transparent bg-gradient-to-r from-[#2c4871] to-[#1e3a5f] text-white shadow-lg scale-[1.03] lg:scale-[1.05]" // Slightly larger scale on active
+                                             : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:shadow-md hover:scale-[1.02]" // Enhanced hover
+                                         }
+                                     `}
+                                 >
+                                     <div className="flex items-center w-full sm:w-auto mb-2 sm:mb-0">
+                                         <span className={`text-xl font-bold mr-4 ml-1 w-8 text-center flex-shrink-0 ${step.isActive ? "text-yellow-300" : "text-[#2c4871]"}`}>
+                                             {index < 9 ? `0${index + 1}` : index + 1}
+                                         </span>
+                                         <span className="text-lg font-medium">{step.text}</span>
+                                     </div>
+                                     {step.isActive && (
+                                         <button className="bg-white text-[#2c4871] font-bold py-2 px-6 rounded-lg shadow-md transition-transform duration-200 hover:scale-105 text-sm w-full sm:w-auto mt-2 sm:mt-0">
+                                             {step.buttonText}
+                                         </button>
+                                     )}
+                                 </motion.div>
                              ); // Closing parenthesis for return
                         })}
                     </motion.div>
@@ -184,4 +186,3 @@ export default function GetStartedSection() { // Removed props
         </section>
     );
 }
-

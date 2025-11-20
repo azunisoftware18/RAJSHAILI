@@ -137,7 +137,7 @@ const learningPathData = [
     <div className=''>
 
             {/* HeroPage */}
-            <HeroSection  />
+            <HeroSection/>
 
             {/* Partner Logos */}
             <PartnerLogosSection/>
